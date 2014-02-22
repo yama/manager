@@ -150,7 +150,7 @@ for ($i=0;$i<count($warnings);$i++) {
     switch ($warnings[$i][0]) {
         case $_lang['configcheck_configinc'];
             $warnings[$i][1] = $_lang['configcheck_configinc_msg'];
-            if(!$_SESSION["mgrConfigCheck"]) $modx->logEvent(0,3,$warnings[$i][1],$_lang['configcheck_configinc']);
+            if(empty($_SESSION["mgrConfigCheck"])) $modx->logEvent(0,3,$warnings[$i][1],$_lang['configcheck_configinc']);
             break;
         case $_lang['configcheck_installer'] :
             $warnings[$i][1] = $_lang['configcheck_installer_msg'];
@@ -166,7 +166,7 @@ for ($i=0;$i<count($warnings);$i++) {
             break;
         case $_lang['configcheck_sysfiles_mod']:
             $warnings[$i][1] = $_lang["configcheck_sysfiles_mod_msg"];
-            if(!$_SESSION["mgrConfigCheck"]) $modx->logEvent(0,3,$warnings[$i][1],$_lang['configcheck_sysfiles_mod']);
+            if(empty($_SESSION["mgrConfigCheck"])) $modx->logEvent(0,3,$warnings[$i][1],$_lang['configcheck_sysfiles_mod']);
             break;
         case $_lang['configcheck_lang_difference'] :
             $warnings[$i][1] = $_lang['configcheck_lang_difference_msg'];
