@@ -103,6 +103,8 @@ if ($limit > 1) {
 // get document groups for current user
 if ($_SESSION['mgrDocgroups']) {
     $docgrp = implode(',', $_SESSION['mgrDocgroups']);
+}else{
+    $docgrp = '';
 }
 
 if (!empty ($id)) {
@@ -141,7 +143,7 @@ if ($modx->manager->hasFormValues()) {
 // sottwell 02-09-2006
 if ($formRestored == true || isset ($_REQUEST['newtemplate'])) {
     $content = array_merge($content, $_POST);
-    $content['content'] = $_POST['ta'];
+    $content['content'] = getkey($_POST, 'ta');
     if (empty ($content['pub_date'])) {
         unset ($content['pub_date']);
     } else {
@@ -157,7 +159,7 @@ if ($formRestored == true || isset ($_REQUEST['newtemplate'])) {
 // increase menu index if this is a new document
 if (!isset ($_REQUEST['id'])) {
     if (!isset ($auto_menuindex) || $auto_menuindex) {
-        $pid = intval($_REQUEST['pid']);
+        $pid = intval(getkey($_REQUEST, 'pid', 0));
         $sql = 'SELECT count(*) FROM '.$tbl_site_content.' WHERE parent=\''.$pid.'\'';
         $content['menuindex'] = $modx->db->getValue($sql);
     } else {
@@ -528,7 +530,7 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
 
 ?>
 <input type="hidden" name="a" value="5" />
-<input type="hidden" name="id" value="<?php echo $content['id']?>" />
+<input type="hidden" name="id" value="<?php echo getkey($content, 'id');?>" />
 <input type="hidden" name="mode" value="<?php echo (int) $_REQUEST['a']?>" />
 <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo isset($upload_maxsize) ? $upload_maxsize : 1048576?>" />
 <input type="hidden" name="refresh_preview" value="0" />
@@ -538,7 +540,7 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
 <input type="hidden" name="page" value="<?php echo $page;?>" />
 
 <fieldset id="create_edit">
-    <h1><?php if ($_REQUEST['id']){ echo $_lang['edit_resource_title']; } else { echo $_lang['create_resource_title'];}?></h1>
+    <h1><?php if (isset($_REQUEST['id'])){ echo $_lang['edit_resource_title']; } else { echo $_lang['create_resource_title'];}?></h1>
 
 <div id="actions">
       <ul class="actionButtons">
@@ -548,10 +550,10 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
             </a><span class="plus"> + </span>
             <select id="stay" name="stay">
               <?php if ($modx->hasPermission('new_document')) { ?>
-              <option id="stay1" value="1" <?php echo $_REQUEST['stay']=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
+              <option id="stay1" value="1" <?php echo getkey($_REQUEST, 'stay')=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
               <?php } ?>
-              <option id="stay2" value="2" <?php echo $_REQUEST['stay']=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
-              <option id="stay3" value=""  <?php echo $_REQUEST['stay']=='' ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
+              <option id="stay2" value="2" <?php echo getkey($_REQUEST, 'stay')=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
+              <option id="stay3" value=""  <?php echo empty($_REQUEST['stay']) ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
             </select>
           </li>
           <?php
@@ -582,22 +584,22 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
 
         <table width="99%" border="0" cellspacing="5" cellpadding="0">
             <tr style="height: 24px;"><td width="100" align="left"><span class="warning"><?php echo $_lang['resource_title']?></span></td>
-                <td><input name="pagetitle" type="text" maxlength="255" value="<?php echo $modx->htmlspecialchars(stripslashes($content['pagetitle']))?>" class="inputBox" onchange="documentDirty=true;" spellcheck="true" />
+                <td><input name="pagetitle" type="text" maxlength="255" value="<?php echo $modx->htmlspecialchars(stripslashes(getkey($content, 'pagetitle')))?>" class="inputBox" onchange="documentDirty=true;" spellcheck="true" />
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_title_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td></tr>
             <tr style="height: 24px;"><td align="left"><span class="warning"><?php echo $_lang['long_title']?></span></td>
-                <td><input name="longtitle" type="text" maxlength="255" value="<?php echo $modx->htmlspecialchars(stripslashes($content['longtitle']))?>" class="inputBox" onchange="documentDirty=true;" spellcheck="true" />
+                <td><input name="longtitle" type="text" maxlength="255" value="<?php echo $modx->htmlspecialchars(stripslashes(getkey($content, 'longtitle')))?>" class="inputBox" onchange="documentDirty=true;" spellcheck="true" />
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_long_title_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td></tr>
             <tr style="height: 24px;"><td><span class="warning"><?php echo $_lang['resource_description']?></span></td>
-                <td><input name="description" type="text" maxlength="255" value="<?php echo $modx->htmlspecialchars(stripslashes($content['description']))?>" class="inputBox" onchange="documentDirty=true;" spellcheck="true" />
+                <td><input name="description" type="text" maxlength="255" value="<?php echo $modx->htmlspecialchars(stripslashes(getkey($content, 'description')))?>" class="inputBox" onchange="documentDirty=true;" spellcheck="true" />
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_description_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td></tr>
             <tr style="height: 24px;"><td><span class="warning"><?php echo $_lang['resource_alias']?></span></td>
-                <td><input name="alias" type="text" maxlength="100" value="<?php echo stripslashes($content['alias'])?>" class="inputBox" onchange="documentDirty=true;" />
+                <td><input name="alias" type="text" maxlength="100" value="<?php echo stripslashes(getkey($content, 'alias'))?>" class="inputBox" onchange="documentDirty=true;" />
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_alias_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td></tr>
             <tr style="height: 24px;"><td><span class="warning"><?php echo $_lang['link_attributes']?></span></td>
-                <td><input name="link_attributes" type="text" maxlength="255" value="<?php echo $modx->htmlspecialchars(stripslashes($content['link_attributes']))?>" class="inputBox" onchange="documentDirty=true;" />
+                <td><input name="link_attributes" type="text" maxlength="255" value="<?php echo $modx->htmlspecialchars(stripslashes(getkey($content, 'link_attributes')))?>" class="inputBox" onchange="documentDirty=true;" />
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['link_attributes_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td></tr>
 
-<?php if ($content['type'] == 'reference' || $_REQUEST['a'] == '72') { // Web Link specific ?>
+<?php if (getkey($content, 'type') == 'reference' || $_REQUEST['a'] == '72') { // Web Link specific ?>
 
             <tr style="height: 24px;"><td><span class="warning"><?php echo $_lang['weblink']?></span> <img name="llock" src="<?php echo $_style["tree_folder"] ?>" alt="tree_folder" onclick="enableLinkSelection(!allowLinkSelection);" style="cursor:pointer;" /></td>
                 <td><input name="ta" type="text" maxlength="255" value="<?php echo !empty($content['content']) ? stripslashes($content['content']) : "http://"?>" class="inputBox" onchange="documentDirty=true;" />
@@ -606,7 +608,7 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
 <?php } ?>
 
             <tr style="height: 24px;"><td valign="top" width="100" align="left"><span class="warning"><?php echo $_lang['resource_summary']?></span></td>
-                <td valign="top"><textarea name="introtext" class="inputBox" rows="3" cols="" onchange="documentDirty=true;"><?php echo $modx->htmlspecialchars(stripslashes($content['introtext']))?></textarea>
+                <td valign="top"><textarea name="introtext" class="inputBox" rows="3" cols="" onchange="documentDirty=true;"><?php echo $modx->htmlspecialchars(stripslashes(getkey($content, 'introtext')))?></textarea>
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_summary_help']?>" onclick="alert(this.alt);" style="cursor:help;" spellcheck="true"/></td></tr>
             <tr style="height: 24px;"><td><span class="warning"><?php echo $_lang['page_data_template']?></span></td>
                 <td><select id="template" name="template" class="inputBox" onchange="templateWarning();" style="width:308px">
@@ -647,13 +649,13 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
 ?>
                 </select> &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['page_data_template_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td></tr>
             <tr style="height: 24px;"><td align="left" style="width:100px;"><span class="warning"><?php echo $_lang['resource_opt_menu_title']?></span></td>
-                <td><input name="menutitle" type="text" maxlength="255" value="<?php echo $modx->htmlspecialchars(stripslashes($content['menutitle']))?>" class="inputBox" onchange="documentDirty=true;" />
+                <td><input name="menutitle" type="text" maxlength="255" value="<?php echo $modx->htmlspecialchars(stripslashes(getkey($content, 'menutitle')))?>" class="inputBox" onchange="documentDirty=true;" />
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_opt_menu_title_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td></tr>
             <tr style="height: 24px;"><td align="left" style="width:100px;"><span class="warning"><?php echo $_lang['resource_opt_menu_index']?></span></td>
                 <td><table border="0" cellspacing="0" cellpadding="0" style="width:333px;"><tr>
                     <td><input name="menuindex" type="text" maxlength="6" value="<?php echo $content['menuindex']?>" class="inputBox" style="width:30px;" onchange="documentDirty=true;" /><input type="button" value="&lt;" onclick="var elm = document.mutate.menuindex;var v=parseInt(elm.value+'')-1;elm.value=v>0? v:0;elm.focus();documentDirty=true;" /><input type="button" value="&gt;" onclick="var elm = document.mutate.menuindex;var v=parseInt(elm.value+'')+1;elm.value=v>0? v:0;elm.focus();documentDirty=true;" />
                     &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_opt_menu_index_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td>
-                    <td align="right" style="text-align:right;"><span class="warning"><?php echo $_lang['resource_opt_show_menu']?></span>&nbsp;<input name="hidemenucheck" type="checkbox" class="checkbox" <?php echo $content['hidemenu']!=1 ? 'checked="checked"':''?> onclick="changestate(document.mutate.hidemenu);" /><input type="hidden" name="hidemenu" class="hidden" value="<?php echo ($content['hidemenu']==1) ? 1 : 0?>" />
+                    <td align="right" style="text-align:right;"><span class="warning"><?php echo $_lang['resource_opt_show_menu']?></span>&nbsp;<input name="hidemenucheck" type="checkbox" class="checkbox" <?php echo getkey($content, 'hidemenu')!=1 ? 'checked="checked"':''?> onclick="changestate(document.mutate.hidemenu);" /><input type="hidden" name="hidemenu" class="hidden" value="<?php echo (getkey($content, 'hidemenu')==1) ? 1 : 0?>" />
                     &nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_opt_show_menu_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td>
                 </tr></table></td></tr>
 
@@ -702,7 +704,7 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
                 </td></tr>
         </table>
 
-<?php if ($content['type'] == 'document' || $_REQUEST['a'] == '4') { ?>
+<?php if (getkey($content, 'type') == 'document' || $_REQUEST['a'] == '4') { ?>
         <!-- Content -->
             <div class="sectionHeader" id="content_header"><?php echo $_lang['resource_content']?></div>
             <div class="sectionBody" id="content_body">
@@ -739,7 +741,7 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
             </div><!-- end .sectionBody -->
 <?php } ?>
 
-<?php if (($content['type'] == 'document' || $_REQUEST['a'] == '4') || ($content['type'] == 'reference' || $_REQUEST['a'] == 72)) { ?>
+<?php if ((getkey($content, 'type') == 'document' || $_REQUEST['a'] == '4') || (getkey($content, 'type') == 'reference' || $_REQUEST['a'] == 72)) { ?>
         <!-- Template Variables -->
             <div class="sectionHeader" id="tv_header"><?php echo $_lang['settings_templvars']?></div>
             <div class="sectionBody tmplvars" id="tv_body">
@@ -751,6 +753,7 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
                     if (isset ($content['template']))
                         $template = $content['template'];
                 }
+                $docgrp = isset($docgrp) ? $docgrp : null;
 
                 $sql = 'SELECT DISTINCT tv.*, IF(tvc.value!=\'\',tvc.value,tv.default_text) as value '.
                        'FROM '.$tbl_site_tmplvars.' AS tv '.
@@ -1150,6 +1153,7 @@ if ($use_udperms == 1) {
 
     // See if the Access Permissions section is worth displaying...
     if (!empty($permissions)) {
+        $notPublic = isset($notPublic) ? $notPublic : null;
         // Add the "All Document Groups" item if we have rights in both contexts
         if ($isManager && $isWeb)
             array_unshift($permissions,"\t\t".'<li><input type="checkbox" class="checkbox" name="chkalldocs" id="groupall"'.(!$notPublic ? ' checked="checked"' : '').' onclick="makePublic(true);" /><label for="groupall" class="warning">' . $_lang['all_doc_groups'] . '</label></li>');
@@ -1217,8 +1221,8 @@ if (is_array($evtOut)) echo implode('', $evtOut);
     storeCurTemplate();
 </script>
 <?php
-    if (($content['richtext'] == 1 || $_REQUEST['a'] == '4' || $_REQUEST['a'] == '72') && $use_editor == 1) {
-        if (is_array($replace_richtexteditor)) {
+    if ((getkey($content, 'richtext') == 1 || $_REQUEST['a'] == '4' || $_REQUEST['a'] == '72') && $use_editor == 1) {
+        if (isset($replace_richtexteditor) && is_array($replace_richtexteditor)) {
             // invoke OnRichTextEditorInit event
             $evtOut = $modx->invokeEvent('OnRichTextEditorInit', array(
                 'editor' => $which_editor,

@@ -14,7 +14,7 @@ $modx->invokeEvent('OnManagerPreFrameLoader',array('action'=>$action));
 </head>
 <frameset rows="<?php echo $modx->config['manager_menu_height'];?>,*" border="0">
 	<frame name="mainMenu" src="index.php?a=1&amp;f=menu" scrolling="no" frameborder="0" noresize="noresize">
-<?php if (!$modx_textdir) {
+<?php if (!isset($modx_textdir)) {
 	// Left-to-Right reading (sidebar on left)
 	?>
 	<frameset cols="<?php echo $modx->config['manager_tree_width'];?>,*" border="1" frameborder="3" framespacing="1">

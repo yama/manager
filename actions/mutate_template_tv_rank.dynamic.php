@@ -43,6 +43,8 @@ $sql = 'SELECT tv.name AS `name`, tv.id AS `id`, tr.templateid, tr.rank, tm.temp
 $rs = $modx->db->query($sql);
 $limit = $modx->db->getRecordCount($rs);
 
+$evtLists = '<ul>';
+
 if($limit>1) {
     for ($i=0;$i<$limit;$i++) {
         $row = $modx->db->getRow($rs);

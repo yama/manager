@@ -129,14 +129,14 @@ $array_paging = $p->getPagingArray();
 $array_row_paging = $p->getPagingRowArray();
 
 // Display the result as you like...
-$pager .= $_lang['showing']." ". $array_paging['lower'];
+$pager = $_lang['showing']." ". $array_paging['lower'];
 $pager .=  " ".$_lang['to']." ". $array_paging['upper'];
 $pager .=  " (". $array_paging['total']." ".$_lang['total'].")";
-$pager .=  "<br />". $array_paging['previous_link'] ."&lt;&lt;" . (isset($array_paging['previous_link']) ? "</a> " : " ");
+$pager .=  "<br />". getkey($array_paging, 'previous_link') ."&lt;&lt;" . (isset($array_paging['previous_link']) ? "</a> " : " ");
 for( $i=0; $i<sizeof($array_row_paging); $i++ ){
   $pager .=  $array_row_paging[$i] ."&nbsp;";
 }
-$pager .=  $array_paging['next_link'] ."&gt;&gt;". (isset($array_paging['next_link']) ? "</a>" : "");
+$pager .=  getkey($array_paging, 'next_link') ."&gt;&gt;". (isset($array_paging['next_link']) ? "</a>" : "");
 
 // The above exemple print somethings like:
 // Results 1 to 20 of 597  <<< 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 >>>
@@ -179,7 +179,7 @@ $dotablestuff = 1;
             $messagestyle = $message['messageread']==0 ? "messageUnread" : "messageRead";
 ?>
     <tr>
-      <td ><?php echo $message['messageread']==0 ? "<img src='".$_style["icons_new19"]."'>" : ""; ?></td>
+      <td ><?php echo $message['messageread']==0 ? "<img src='".$_style["icons_email"]."'>" : ""; ?></td>
       <td class="<?php echo $messagestyle; ?>" style="cursor: pointer; text-decoration: underline;" onClick="document.location.href='index.php?a=10&id=<?php echo $message['id']; ?>&m=r';"><?php echo $message['subject']; ?></td>
       <td ><?php echo $sendername; ?></td>
       <td ><?php echo $message['private']==0 ? $_lang['no'] : $_lang['yes'] ; ?></td>
@@ -189,7 +189,7 @@ $dotablestuff = 1;
             }
     }
 
-if($dotablestuff==1) { ?>
+if(isset($dotablestuff) && $dotablestuff==1) { ?>
 </tbody>
 </table>
 <?php } ?>
@@ -197,7 +197,8 @@ if($dotablestuff==1) { ?>
 <div class="section">
 <div class="sectionHeader"><?php echo $_lang['messages_compose']; ?></div><div class="sectionBody">
 <?php
-if(($_REQUEST['m']=='rp' || $_REQUEST['m']=='f') && isset($_REQUEST['id'])) {
+$subjecttext = $messagetext = '';
+if(isset($_REQUEST['m']) && ($_REQUEST['m']=='rp' || $_REQUEST['m']=='f') && isset($_REQUEST['id'])) {
     $sql = "SELECT * FROM $dbase.`".$table_prefix."user_messages` WHERE $dbase.`".$table_prefix."user_messages`.id=".$_REQUEST['id'];
     $rs = $modx->db->query($sql);
     $limit = $modx->db->getRecordCount($rs);

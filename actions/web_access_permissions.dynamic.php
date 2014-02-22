@@ -95,7 +95,7 @@ if ($modx->db->getRecordCount($rs) < 1) {
 				'</form>';
 
 				echo "<ul>\n";
-				echo "\t<li>".$_lang['web_access_permissions_users_in_group'].' ';
+				echo "\t<li>".$_lang['web_access_permissions_user_groups'].' ';
 			}
 			if (!$row['user_id']) {
 				// no users in group

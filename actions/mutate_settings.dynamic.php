@@ -1743,7 +1743,7 @@ function confirmLangChange(el, lkey, elupd){
 </div>
 </form>
 <?php
-if (is_numeric($_GET['tab'])) {
+if (!empty($_GET['tab']) && is_numeric($_GET['tab'])) {
     echo '<script type="text/javascript">tpSettings.setSelectedIndex( '.$_GET['tab'].' );</script>';
 }
 

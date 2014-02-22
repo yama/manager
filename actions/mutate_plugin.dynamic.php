@@ -283,9 +283,9 @@ if(is_array($evtOut)) echo implode("",$evtOut);
                 </a>
                   <span class="plus"> + </span>
                 <select id="stay" name="stay">
-                  <option id="stay1" value="1" <?php echo $_REQUEST['stay']=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
-                  <option id="stay2" value="2" <?php echo $_REQUEST['stay']=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
-                  <option id="stay3" value=""  <?php echo $_REQUEST['stay']=='' ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
+                  <option id="stay1" value="1" <?php echo getkey($_REQUEST, 'stay')=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
+                  <option id="stay2" value="2" <?php echo getkey($_REQUEST, 'stay')=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
+                  <option id="stay3" value=""  <?php echo empty($_REQUEST['stay']) ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
                 </select>
               </li>
               <?php
@@ -350,7 +350,7 @@ if(is_array($evtOut)) echo implode("",$evtOut);
     <!-- PHP text editor start -->
     <div class="section">
         <div class="sectionHeader">
-            <span style="float:right;">&nbsp;<?php echo $_lang['wrap_lines']; ?><input name="wrap" type="checkbox" <?php echo $content['wrap']== 1 ? "checked='checked'" : "" ;?> class="inputBox" onclick="setTextWrap(document.mutate.post,this.checked)" /></span>
+            <span style="float:right;">&nbsp;<?php echo $_lang['wrap_lines']; ?><input name="wrap" type="checkbox" <?php echo getkey($content, 'wrap')== 1 ? "checked='checked'" : "" ;?> class="inputBox" onclick="setTextWrap(document.mutate.post,this.checked)" /></span>
             <?php echo $_lang['plugin_code']; ?>
         </div>
         <div class="sectionBody">
@@ -436,6 +436,9 @@ if(is_array($evtOut)) echo implode("",$evtOut);
     );
     $rs = $modx->db->select('*',$tbl_system_eventnames,'','service DESC, groupname, name');
     $limit = $modx->db->getRecordCount($rs);
+    $srv = isset($srv) ? $srv : null;
+    $grp = isset($grp) ? $grp : null;
+
     if($limit==0) echo "<tr><td>&nbsp;</td></tr>";
     else for ($i=0; $i<$limit; $i++) {
         $row = $modx->db->getRow($rs);
@@ -453,7 +456,7 @@ if(is_array($evtOut)) echo implode("",$evtOut);
                 echo "<tr><td colspan='2'><div class='split' style='margin:10px 0;'></div></td></tr>";
                 echo "<tr><td colspan='2'><b>".$row['groupname']."</b></td></tr>";
         }
-        $evtnames[] = '<input name="sysevents[]" id="' . $row['name'] . '" type="checkbox"'.(in_array($row['id'],$evts) ? " checked='checked' " : "").'class="inputBox" value="'.$row['id'].'" /><label for="'.$row['name']. '"' . bold(in_array($row[id],$evts)) . '>'.$row['name'].'</label>'."\n";
+        $evtnames[] = '<input name="sysevents[]" id="' . $row['name'] . '" type="checkbox"'.(in_array($row['id'] ,$evts) ? " checked='checked' " : "").'class="inputBox" value="'.$row['id'].'" /><label for="'.$row['name']. '"' . bold(in_array($row['id'],$evts)) . '>'.$row['name'].'</label>'."\n";
         if(count($evtnames)==2) echoEventRows($evtnames);
     }
     if(count($evtnames)>0) echoEventRows($evtnames);

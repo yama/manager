@@ -15,7 +15,7 @@ $default_text = $modx->db->escape($_POST['default_text']);
 $rank = isset ($_POST['rank']) ? $modx->db->escape($_POST['rank']) : 0;
 $display = $modx->db->escape($_POST['display']);
 $params = $modx->db->escape($_POST['params']);
-$locked = $_POST['locked']=='on' ? 1 : 0 ;
+$locked = getkey($_POST, 'locked', 'off')=='on' ? 1 : 0 ;
 
 //Kyle Jaebker - added category support
 if (empty($_POST['newcategory']) && $_POST['categoryid'] > 0) {
@@ -69,7 +69,7 @@ switch ($_POST['mode']) {
 			$_GET['a'] = '300';
 			$_GET['stay'] = $_POST['stay'];
 			$content = array_merge($content, $_POST);
-			$content['locked'] = $content['locked'] == 'on' ? 1: 0;
+			$content['locked'] = getkey($content, 'locked', 'off') == 'on' ? 1: 0;
 			$content['category'] = $_POST['categoryid'];
 
 			include 'header.inc.php';
@@ -203,8 +203,8 @@ function saveTemplateAccess() {
 	
 	$modx->db->query("DELETE FROM $tbl WHERE tmplvarid = $id");
 	for($i=0;$i<count($templates);$i++){
-	    $setRank = ($getRankArray[$templates[$i]]) ? $getRankArray[$templates[$i]] : 0;
-		$modx->db->query("INSERT INTO $tbl (tmplvarid,templateid,rank) VALUES($id,".$templates[$i].",$setRank);");
+	    $setRank = getkey($getRankArray, getkey($templates, $i, 0), 0);
+		$modx->db->query("INSERT INTO $tbl (tmplvarid,templateid,rank) VALUES($id,".getkey($templates, $i, 0).",$setRank);");
 	}	
 }
 
@@ -213,7 +213,7 @@ function saveDocumentAccessPermissons(){
 	global $modx,$dbase,$table_prefix,$use_udperms;
 
 	if($newid) $id = $newid;
-	$docgroups = $_POST['docgroups'];
+	$docgroups = getkey($_POST, 'docgroups');
 
 	// check for permission update access
 	if($use_udperms==1) {

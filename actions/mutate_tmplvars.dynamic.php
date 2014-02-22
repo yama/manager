@@ -257,10 +257,10 @@ function decode(s){
     $evtOut = $modx->invokeEvent('OnTVFormPrerender',array('id' => $id));
     if(is_array($evtOut)) echo implode("",$evtOut);
 ?>
-<input type="hidden" name="id" value="<?php echo $content['id'];?>">
+<input type="hidden" name="id" value="<?php echo getkey($content, 'id');?>">
 <input type="hidden" name="a" value="302">
 <input type="hidden" name="mode" value="<?php echo $_GET['a'];?>">
-<input type="hidden" name="params" value="<?php echo htmlspecialchars($content['display_params']);?>">
+<input type="hidden" name="params" value="<?php echo htmlspecialchars(getkey($content, 'display_params'));?>">
 
 	<h1><?php echo $_lang['tmplvars_title']; ?></h1>
 
@@ -271,9 +271,9 @@ function decode(s){
     			  <img src="<?php echo $_style["icons_save"]?>" /> <?php echo $_lang['save']?>
     			</a><span class="plus"> + </span>
     			<select id="stay" name="stay">
-    			  <option id="stay1" value="1" <?php echo $_REQUEST['stay']=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
-    			  <option id="stay2" value="2" <?php echo $_REQUEST['stay']=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
-    			  <option id="stay3" value=""  <?php echo $_REQUEST['stay']=='' ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
+    			  <option id="stay1" value="1" <?php echo getkey($_REQUEST, 'stay')=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
+    			  <option id="stay2" value="2" <?php echo getkey($_REQUEST, 'stay')=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
+    			  <option id="stay3" value=""  <?php echo empty($_REQUEST['stay']) ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
     			</select>		
     		  </li>
     		  <?php
@@ -300,16 +300,16 @@ function decode(s){
 <table>
   <tr>
     <th><?php echo $_lang['tmplvars_name']; ?>:</th>
-    <td>[*&nbsp;<input name="name" type="text" maxlength="50" value="<?php echo htmlspecialchars($content['name']);?>" class="inputBox" style="width:250px;" onchange="documentDirty=true;">*]&nbsp; <span class="warning" id='savingMessage'>&nbsp;</span></td>
+    <td>[*&nbsp;<input name="name" type="text" maxlength="50" value="<?php echo htmlspecialchars(getkey($content, 'name'));?>" class="inputBox" style="width:250px;" onchange="documentDirty=true;">*]&nbsp; <span class="warning" id='savingMessage'>&nbsp;</span></td>
   </tr>
   <tr>
     <th><?php echo $_lang['tmplvars_caption']; ?>:</th>
-    <td><input name="caption" type="text" maxlength="80" value="<?php echo htmlspecialchars($content['caption']);?>" class="inputBox" style="width:300px;" onchange="documentDirty=true;"></td>
+    <td><input name="caption" type="text" maxlength="80" value="<?php echo htmlspecialchars(getkey($content, 'caption'));?>" class="inputBox" style="width:300px;" onchange="documentDirty=true;"></td>
   </tr>
 
   <tr>
     <th><?php echo $_lang['tmplvars_description']; ?>:</th>
-    <td><input name="description" type="text" maxlength="255" value="<?php echo htmlspecialchars($content['description']);?>" class="inputBox" style="width:300px;" onChange="documentDirty=true;"></td>
+    <td><input name="description" type="text" maxlength="255" value="<?php echo htmlspecialchars(getkey($content, 'description'));?>" class="inputBox" style="width:300px;" onChange="documentDirty=true;"></td>
   </tr>
   <tr>
     <th><?php echo $_lang['existing_category']; ?>:</th>
@@ -319,7 +319,7 @@ function decode(s){
             include_once "categories.inc.php";
             $ds = getCategories();
             if($ds) foreach($ds as $n=>$v){
-                echo "<option value='".$v['id']."'".($content["category"]==$v["id"]? " selected='selected'":"").">".htmlspecialchars($v["category"])."</option>";
+                echo "<option value='".$v['id']."'".(getkey($content, "category")==$v["id"]? " selected='selected'":"").">".htmlspecialchars($v["category"])."</option>";
             }
         ?>
         </select>
@@ -331,7 +331,7 @@ function decode(s){
   </tr>
 <?php if($modx->hasPermission('save_role')):?>
   <tr>
-    <td colspan="2"><label><input name="locked" value="on" type="checkbox" <?php echo $content['locked']==1 ? "checked='checked'" : "" ;?> class="inputBox" /> <?php echo $_lang['lock_tmplvars']; ?></label> <span class="comment"><?php echo $_lang['lock_tmplvars_msg']; ?></span></td>
+    <td colspan="2"><label><input name="locked" value="on" type="checkbox" <?php echo getkey($content, 'locked')==1 ? "checked='checked'" : "" ;?> class="inputBox" /> <?php echo $_lang['lock_tmplvars']; ?></label> <span class="comment"><?php echo $_lang['lock_tmplvars_msg']; ?></span></td>
   </tr>
 <?php endif;?>
   <tr>
@@ -339,6 +339,10 @@ function decode(s){
   </tr>
   <tr>
     <th><?php echo $_lang['tmplvars_type']; ?>:&nbsp;&nbsp;</th>
+      <?php
+      if(!isset($content['type'])){
+          $content['type'] = '';
+      }?>
     <td><select name="type" size="1" class="inputBox" style="width:300px;" onchange="documentDirty=true;">
 	            <option value="text" <?php      echo ($content['type']==''||$content['type']=='text')? "selected='selected'":""; ?>>Text</option>
 	            <option value="rawtext" <?php       echo ($content['type']=='rawtext')? "selected='selected'":""; ?>>Raw Text (deprecated)</option>
@@ -363,17 +367,22 @@ function decode(s){
   </tr>
   <tr>
 	<th><?php echo $_lang['tmplvars_elements']; ?>:  </th>
-	<td nowrap="nowrap"><textarea name="elements" maxlength="65535" class="inputBox textarea" onchange="documentDirty=true;"><?php echo htmlspecialchars($content['elements']);?></textarea><img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['tmplvars_binding_msg']; ?>" onclick="alert(this.alt);" style="cursor:help" /></td>
+	<td nowrap="nowrap"><textarea name="elements" maxlength="65535" class="inputBox textarea" onchange="documentDirty=true;"><?php echo htmlspecialchars(getkey($content, 'elements'));?></textarea><img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['tmplvars_binding_msg']; ?>" onclick="alert(this.alt);" style="cursor:help" /></td>
   </tr>
   <tr>
     <th><?php echo $_lang['tmplvars_default']; ?>:&nbsp;&nbsp;</th>
-    <td nowrap="nowrap"><textarea name="default_text" type="text" class="inputBox" rows="5" style="width:300px;" onchange="documentDirty=true;"><?php echo htmlspecialchars($content['default_text']);?></textarea><img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['tmplvars_binding_msg']; ?>" onclick="alert(this.alt);" style="cursor:help" /></td>
+    <td nowrap="nowrap"><textarea name="default_text" type="text" class="inputBox" rows="5" style="width:300px;" onchange="documentDirty=true;"><?php echo htmlspecialchars(getkey($content, 'default_text'));?></textarea><img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['tmplvars_binding_msg']; ?>" onclick="alert(this.alt);" style="cursor:help" /></td>
   </tr>
   <tr>
     <th><?php echo $_lang['tmplvars_widget']; ?>:&nbsp;&nbsp;</th>
     <td>
+        <?php
+        if(!isset($content['display'])){
+            $content['display'] = '';
+        }
+        ?>
         <select name="display" size="1" class="inputBox" style="width:300px;" onChange='documentDirty=true;showParameters(this);'>
-	            <option value="" <?php echo ($content['display']=='')? "selected='selected'":""; ?>>&nbsp;</option>
+	            <option value="" <?php echo $content['display']==''? "selected='selected'":""; ?>>&nbsp;</option>
 			<optgroup label="Widgets">
 	            <option value="datagrid" <?php echo ($content['display']=='datagrid')? "selected='selected'":""; ?>>Data Grid</option>
 	            <option value="floater" <?php echo ($content['display']=='floater')? "selected='selected'":""; ?>>Floater</option>
@@ -432,7 +441,7 @@ function decode(s){
 	    	{
 	    		$checked = true;
 	    	}
-	    	elseif($id == 0 && is_array($_POST['template']))
+	    	elseif($id == 0 && is_array(getkey($_POST, 'template')))
 	    	{
 	    		$checked = in_array($row['id'], $_POST['template']);
 	    	}
@@ -490,10 +499,12 @@ function decode(s){
 <p><?php echo $_lang['tmplvar_access_msg']; ?></p>
 <?php
 		}
-		$chk ='';
+		$chks ='';
+        $notPublic = false;
+
 		$rs = $modx->db->select('name, id', $tbl_documentgroup_names);
 		    $limit = $modx->db->getRecordCount($rs);
-		    if(empty($groupsarray) && is_array($_POST['docgroups']) && empty($_POST['id'])) {
+		    if(empty($groupsarray) && is_array(getkey($_POST, 'docgroups')) && empty($_POST['id'])) {
 		    	$groupsarray = $_POST['docgroups'];
 		    }
 		    for($i=0; $i<$limit; $i++) {

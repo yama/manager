@@ -132,7 +132,7 @@ window.addEvent('domready', function() {
   <tr bgcolor="#ffffff">
     <td><b><?php echo $_lang["mgrlog_msg"]; ?></b></td>
     <td align="right">
-      <input type="text" name="message" class="inputbox" style="width:240px" value="<?php echo $_REQUEST['message']; ?>" />
+      <input type="text" name="message" class="inputbox" style="width:240px" value="<?php echo (isset($_REQUEST['message']) ? $_REQUEST['message'] : ''); ?>" />
     </td>
   </tr>
   <tr bgcolor="#eeeeee">
@@ -223,22 +223,22 @@ if(isset($_REQUEST['log_submit'])) {
 		print "<p>". $_lang["paging_showing"]." ". $array_paging['lower'];
 		print " ". $_lang["paging_to"] . " ". $array_paging['upper'];
 		print " (". $array_paging['total'] . " " . $_lang["paging_total"] . ")<br />";
-		$paging = $array_paging['first_link'] . $_lang["paging_first"] . (isset($array_paging['first_link']) ? "</a> " : " ");
-		$paging .= $array_paging['previous_link'] . $_lang["paging_prev"] . (isset($array_paging['previous_link']) ? "</a> " : " ");
+		$paging = getkey($array_paging, 'first_link') . $_lang["paging_first"] . (isset($array_paging['first_link']) ? "</a> " : " ");
+		$paging .= getkey($array_paging, 'previous_link') . $_lang["paging_prev"] . (isset($array_paging['previous_link']) ? "</a> " : " ");
 		$pagesfound = sizeof($array_row_paging);
 		if($pagesfound>6) {
-			$paging .= $array_row_paging[$current_row-2]; // ."&nbsp;";
-			$paging .= $array_row_paging[$current_row-1]; // ."&nbsp;";
-			$paging .= $array_row_paging[$current_row]; // ."&nbsp;";
-			$paging .= $array_row_paging[$current_row+1]; // ."&nbsp;";
-			$paging .= $array_row_paging[$current_row+2]; // ."&nbsp;";
+            for($i=$current_row-2; $i<=$current_row+2; $i++){
+                if(isset($array_row_paging[$i])){
+                    $paging .= $array_row_paging[$i]; // ."&nbsp;";
+                }
+            }
 		} else {
 			for( $i=0; $i<$pagesfound; $i++ ){
 				$paging .= $array_row_paging[$i] ."&nbsp;";
 			}
 		}
-		$paging .= $array_paging['next_link'] . $_lang["paging_next"] . (isset($array_paging['next_link']) ? "</a> " : " ") . " ";
-		$paging .= $array_paging['last_link'] . $_lang["paging_last"] . (isset($array_paging['last_link']) ? "</a> " : " ") . "</p>";
+		$paging .= getkey($array_paging, 'next_link') . $_lang["paging_next"] . (isset($array_paging['next_link']) ? "</a> " : " ") . " ";
+		$paging .= getkey($array_paging, 'last_link') . $_lang["paging_last"] . (isset($array_paging['last_link']) ? "</a> " : " ") . "</p>";
 		echo $paging;
 		// The above exemple print somethings like:
 		// Results 1 to 20 of 597  <<< 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 >>>

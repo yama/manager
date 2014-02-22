@@ -22,7 +22,7 @@ if(!$modx->hasPermission('logs')) {
 		  <tr>
 			<td width="150"><?php echo $_lang['modx_version']?></td>
 			<td width="20">&nbsp;</td>
-			<td><b><?php echo $modx->getVersionData('version') ?></b><?php echo $newversiontext ?></td>
+			<td><b><?php echo $modx->getVersionData('version') ?></b><?php echo $modx->getConfig('newversiontext'); ?></td>
 		  </tr>
 		  <tr>
 			<td width="150"><?php echo $_lang['release_date']?></td>
@@ -235,8 +235,8 @@ if(!$modx->hasPermission('logs')) {
 			<td dir='ltr' align="right"><?php echo nicesize($log_status['Index_length']+$log_status['Data_length']+$log_status['Data_free']); ?></td>
 		  </tr>
 <?php
-		$total = $total+$log_status['Index_length']+$log_status['Data_length'];
-		$totaloverhead = $totaloverhead+$log_status['Data_free'];
+		$total = (isset($total) ? $total : 0) + $log_status['Index_length']+$log_status['Data_length'];
+		$totaloverhead = (isset($totaloverhead) ? $totaloverhead : 0) + $log_status['Data_free'];
 	}
 ?>
 		  <tr bgcolor="#CCCCCC">

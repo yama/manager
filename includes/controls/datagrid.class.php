@@ -50,6 +50,18 @@ class DataGrid {
         var $pagerClass;
 	var $noRecordMsg = "No records found.";
 
+    protected $_colcount;
+    protected $_colwidths;
+    protected $_isDataset;
+    protected $_itemStyle;
+    protected $_altItemStyle;
+    protected $_altItemClass;
+    protected $_itemClass;
+    protected $_colnames;
+    protected $_fieldnames;
+    protected $_coltypes;
+    protected $_colwraps;
+
 	function DataGrid($id,$ds,$pageSize=20,$pageNumber=-1) {
         global $__DataGridCnt;
 		
@@ -82,7 +94,8 @@ class DataGrid {
                         $color=isset($this->_colcolors[$c]) ? $this->_colcolors[$c] : null;
                         $type= isset($this->_coltypes[$c]) ? $this->_coltypes[$c] : null;
                         $nowrap=isset($this->_colwraps[$c]) ? $this->_colwraps[$c] : null;
-			$value = $row[($this->_isDataset && $fld ? $fld:$c)];
+            $tmp = ($this->_isDataset && $fld ? $fld:$c);
+			$value = getkey($row, $tmp);
 			if($color && $Style) $colStyle = substr($colStyle,0,-1).";background-color:$color;'";
 			$value = $this->formatColumnValue($row,$value,$type,$align);
 			$o.="<td $colStyle $Class".($align? " align='$align'":"").($color? " bgcolor='$color'":"").($nowrap? " nowrap='$nowrap'":"").($width? " width='$width'":"").">$value</td>";
@@ -93,7 +106,11 @@ class DataGrid {
 	
 	// format column values
 	function formatColumnValue($row,$value,$type,&$align){
-		if(strpos($type,":")!==false) list($type,$type_format) = explode(":",$type,2);
+		if(strpos($type,":")!==false){
+            list($type,$type_format) = explode(":",$type,2);
+        }else{
+            $type_format = '';
+        }
 		switch (strtolower($type)) {
 			case "integer":
 				if($align=="") $align="right";
@@ -144,6 +161,7 @@ class DataGrid {
 
 	function render(){
 		global $modx;
+        $tblPager = '';
 		$columnHeaderStyle	= ($this->columnHeaderStyle)? "style='".$this->columnHeaderStyle."'":'';
 		$columnHeaderClass	= ($this->columnHeaderClass)? "class='".$this->columnHeaderClass."'":"";
 		$cssStyle			= ($this->cssStyle)? "style='".$this->cssStyle."'":'';
@@ -190,8 +208,8 @@ class DataGrid {
 		}
 		$tblColHdr ="<thead><tr>";
 		for($c=0;$c<$this->_colcount;$c++){
-			$name=$this->_colnames[$c];
-			$width=$this->_colwidths[$c];
+			$name = getkey($this->_colnames, $c, '-');
+			$width = getkey($this->_colwidths, $c);
 			$tblColHdr.="<td $columnHeaderStyle $columnHeaderClass".($width? " width='$width'":"").">$name</td>";
 		}
 		$tblColHdr.="</tr></thead>\n";
@@ -199,6 +217,7 @@ class DataGrid {
 		// build rows 
 		$rowcount = $this->_isDataset ? $modx->db->getRecordCount($this->ds):count($this->ds);
 		$this->_fieldnames = explode(",",$this->fields);
+        $tblRows = '';
 		if($rowcount==0) $tblRows.= "<tr><td ".$this->_itemStyle." ".$this->_itemClass." colspan='".$this->_colcount."'>".$this->noRecordMsg."</td></tr>\n";
 		else {
 			// render grid items
@@ -232,6 +251,7 @@ class DataGrid {
 		$ptop = (substr($this->pagerLocation,0,3)=="top")||(substr($this->pagerLocation,0,4)=="both");
 		$pbot = (substr($this->pagerLocation,0,3)=="bot")||(substr($this->pagerLocation,0,4)=="both");
 		if($this->header) $o.="<tr><td bgcolor='#ffffff' colspan='".$this->_colcount."'>".$this->header."</td></tr>";
+
 		if($tblPager && $ptop) $o.="<tr><td align='".(substr($this->pagerLocation,-4)=="left"? "left":"right")."' $pagerClass $pagerStyle colspan='".$this->_colcount."'>".$tblPager."&nbsp;</td></tr>";		
 		$o.=$tblColHdr.$tblRows;
 		if($tblPager && $pbot) $o.="<tr><td align='".(substr($this->pagerLocation,-4)=="left"? "left":"right")."' $pagerClass $pagerStyle colspan='".$this->_colcount."'>".$tblPager."&nbsp;</td></tr>";		

@@ -23,8 +23,11 @@ $tbl_site_templates        = $modx->getFullTableName('site_templates');
 
 
 // Get access permissions
-if($_SESSION['mgrDocgroups'])
+if($_SESSION['mgrDocgroups']){
 	$docgrp = implode(",",$_SESSION['mgrDocgroups']);
+}else{
+    $docgrp = '';
+}
 $access = "1='".$_SESSION['mgrRole']."' OR sc.privatemgr=0".(!$docgrp ? "":" OR dg.document_group IN ($docgrp)");
 
 // Get the document content
@@ -394,7 +397,7 @@ function movedocument() {
 </div><!-- end documentPane -->
 </div><!-- end sectionBody -->
 
-<?php if ($show_preview==1) { ?>
+<?php if (isset($show_preview) && $show_preview==1) { ?>
 <div class="sectionHeader"><?php echo $_lang['preview']?></div>
 <div class="sectionBody" id="lyr2">
 	<iframe src="<?php echo BOLMER_SITE_URL; ?>index.php?id=<?php echo $id?>&z=manprev" frameborder="0" border="0" id="previewIframe"></iframe>

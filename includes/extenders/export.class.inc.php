@@ -72,7 +72,7 @@ class EXPORT_SITE
 		
 		$this->ignore_ids = $ignore_ids;
 		
-		$noncache = $include_noncache==1 ? '' : 'AND cacheable=1';
+		$noncache = !empty($include_noncache) ? '' : 'AND cacheable=1';
 		$where = "deleted=0 AND ((published=1 AND type='document') OR (isfolder=1)) {$noncache} {$ignore_ids}";
 		$rs  = $modx->db->select('count(id) as total',$tbl_site_content,$where);
 		$row = $modx->db->getRow($rs);
@@ -140,7 +140,7 @@ class EXPORT_SITE
 		if($alias==='') $filename = $prefix.$docid.$suffix;
 		else
 		{
-			if($modx->config['suffix_mode']==='1' && strpos($alias, '.')!==false)
+			if($modx->getConfig('suffix_mode')==='1' && strpos($alias, '.')!==false)
 			{
 				$suffix = '';
 			}
@@ -225,7 +225,7 @@ class EXPORT_SITE
 				$row['status'] = $msg_success_skip_dir;
 				$this->output[] = $this->parsePlaceholder($_lang['export_site_exporting_document'], $row);
 			}
-			if ($row['isfolder']==='1' && ($modx->config['suffix_mode']!=='1' || strpos($row['alias'],'.')===false))
+			if ($row['isfolder']==='1' && ($modx->getConfig('suffix_mode')!=='1' || strpos($row['alias'],'.')===false))
 			{ // needs making a folder
 				$end_dir = ($row['alias']!=='') ? $row['alias'] : $row['id'];
 				$dir_path = $dirpath . $end_dir;

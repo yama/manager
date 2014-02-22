@@ -266,8 +266,8 @@ for ($i = 0; $i < $limit; $i++) {
 	     '<td dir="ltr" align="right">'.$modx->nicesize($db_status['Index_length']+$db_status['Data_length']+$db_status['Data_free']).'</td>'."\n".
 	     "</tr>";
 
-	$total = $total+$db_status['Index_length']+$db_status['Data_length'];
-	$totaloverhead = $totaloverhead+$db_status['Data_free'];
+	$total = $db_status['Index_length']+$db_status['Data_length'];
+	$totaloverhead = $db_status['Data_free'];
 }
 ?>
 			<tr bgcolor="#CCCCCC">
@@ -440,7 +440,7 @@ else
 
 <?php
 
-if (is_numeric($_GET['tab'])) {
+if (isset($_GET['tab']) && is_numeric($_GET['tab'])) {
     echo '<script type="text/javascript">tpDBM.setSelectedIndex( '.$_GET['tab'].' );</script>';
 }
 
@@ -479,7 +479,7 @@ class Mysqldumper {
 	function isDroptables()        { return $this->_isDroptables; }
 
 	function createDump($callBack) {
-		global $modx;
+		global $modx, $table_prefix;
 
 		// Set line feed
 		$lf = "\n";
@@ -640,14 +640,6 @@ function import_sql($source,$result_code='import_ok')
 	restoreSettings($settings);
 	
 	$modx->clearCache();
-	if(0 < $modx->db->getRecordCount($rs))
-	{
-		while($row = $modx->db->getRow($rs))
-		{
-			$_SESSION['last_result'][] = $row;
-		}
-	}
-	
 	$_SESSION['result_msg'] = $result_code;
 }
 

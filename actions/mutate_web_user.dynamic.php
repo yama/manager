@@ -233,10 +233,10 @@ function showHide(what, onoff){
 			<li><a href="#" onclick="documentDirty=false; document.userform.save.click();"><img src="<?php echo $_style["icons_save"] ?>" /> <?php echo $_lang['save']; ?></a><span class="plus"> + </span>
 			<select id="stay" name="stay">
 			  <?php if ($modx->hasPermission('new_web_user')) { ?>		
-			  <option id="stay1" value="1" <?php echo $_REQUEST['stay']=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
+			  <option id="stay1" value="1" <?php echo isset($_REQUEST['stay']) && $_REQUEST['stay']=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
 			  <?php } ?>
-			  <option id="stay2" value="2" <?php echo $_REQUEST['stay']=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
-			  <option id="stay3" value=""  <?php echo $_REQUEST['stay']=='' ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
+			  <option id="stay2" value="2" <?php echo isset($_REQUEST['stay']) && $_REQUEST['stay']=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
+			  <option id="stay3" value=""  <?php echo empty($_REQUEST['stay']) ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
 			</select>		
 			</li>
 			<li id="btn_del"><a href="#" onclick="deleteuser();"><img src="<?php echo $_style["icons_delete"] ?>" /> <?php echo $_lang['delete']; ?></a></li>
@@ -261,7 +261,7 @@ function showHide(what, onoff){
 		<table border="0" cellspacing="0" cellpadding="3">
 		  <tr>
 			<td colspan="3">
-				<span id="blocked" class="warning"><?php if($userdata['blocked']==1 || ($userdata['blockeduntil']>time() && $userdata['blockeduntil']!=0)|| ($userdata['blockedafter']<time() && $userdata['blockedafter']!=0) || $userdata['failedlogins']>3) { ?><b><?php echo $_lang['user_is_blocked']; ?></b><?php } ?></span><br />
+				<span id="blocked" class="warning"><?php if($userdata['blocked']==1 || ($userdata['blockeduntil']>time() && $userdata['blockeduntil']!=0)|| ($userdata['blockedafter']<time() && $userdata['blockedafter']!=0) || getkey($userdata, 'failedlogins', 0)>3) { ?><b><?php echo $_lang['user_is_blocked']; ?></b><?php } ?></span><br />
 			</td>
 		  </tr>
 		  <?php if(!empty($userdata['id'])) { ?>
@@ -380,9 +380,9 @@ function showHide(what, onoff){
 			<td>&nbsp;</td>
 			<td><select name="gender" onchange="documentDirty=true;">
 				<option value=""></option>
-				<option value="1" <?php echo ($_POST['gender']=='1'||$userdata['gender']=='1')? "selected='selected'":""; ?>><?php echo $_lang['user_male']; ?></option>
-				<option value="2" <?php echo ($_POST['gender']=='2'||$userdata['gender']=='2')? "selected='selected'":""; ?>><?php echo $_lang['user_female']; ?></option>
-				<option value="3" <?php echo ($_POST['gender']=='3'||$userdata['gender']=='3')? "selected='selected'":""; ?>><?php echo $_lang['user_other']; ?></option>
+				<option value="1" <?php echo (getkey($_POST, 'gender')=='1'||$userdata['gender']=='1')? "selected='selected'":""; ?>><?php echo $_lang['user_male']; ?></option>
+				<option value="2" <?php echo (getkey($_POST, 'gender')=='2'||$userdata['gender']=='2')? "selected='selected'":""; ?>><?php echo $_lang['user_female']; ?></option>
+				<option value="3" <?php echo (getkey($_POST, 'gender')=='3'||$userdata['gender']=='3')? "selected='selected'":""; ?>><?php echo $_lang['user_other']; ?></option>
 				</select>
 			</td>
 		  </tr>
@@ -442,7 +442,7 @@ function showHide(what, onoff){
         <table border="0" cellspacing="0" cellpadding="3">
           <tr>
             <td nowrap class="warning"><b><?php echo $_lang["login_homepage"] ?></b></td>
-            <td ><input onchange="documentDirty=true;" type='text' maxlength='50' style="width: 100px;" name="login_home" value="<?php echo isset($_POST['login_home']) ? $_POST['login_home'] : $usersettings['login_home']; ?>"></td>
+            <td ><input onchange="documentDirty=true;" type='text' maxlength='50' style="width: 100px;" name="login_home" value="<?php echo isset($_POST['login_home']) ? $_POST['login_home'] : getkey($usersettings, 'login_home'); ?>"></td>
           </tr>
           <tr>
             <td width="200">&nbsp;</td>
@@ -453,7 +453,7 @@ function showHide(what, onoff){
           </tr>
           <tr>
             <td nowrap class="warning"valign="top"><b><?php echo $_lang["login_allowed_ip"] ?></b></td>
-            <td ><input onchange="documentDirty=true;"  type="text" maxlength='255' style="width: 300px;" name="allowed_ip" value="<?php echo isset($_POST['allowed_ip']) ? $_POST['allowed_ip'] : $usersettings['allowed_ip']; ?>" /></td>
+            <td ><input onchange="documentDirty=true;"  type="text" maxlength='255' style="width: 300px;" name="allowed_ip" value="<?php echo isset($_POST['allowed_ip']) ? $_POST['allowed_ip'] : getkey($usersettings, 'allowed_ip'); ?>" /></td>
           </tr>
           <tr>
             <td width="200">&nbsp;</td>
@@ -465,13 +465,13 @@ function showHide(what, onoff){
           <tr>
             <td nowrap class="warning"valign="top"><b><?php echo $_lang["login_allowed_days"] ?></b></td>
             <td>
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="1" <?php echo strpos($usersettings['allowed_days'],'1')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['sunday']; ?><br />
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="2" <?php echo strpos($usersettings['allowed_days'],'2')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['monday']; ?><br />
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="3" <?php echo strpos($usersettings['allowed_days'],'3')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['tuesday']; ?><br />
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="4" <?php echo strpos($usersettings['allowed_days'],'4')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['wednesday']; ?><br />
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="5" <?php echo strpos($usersettings['allowed_days'],'5')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['thursday']; ?><br />
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="6" <?php echo strpos($usersettings['allowed_days'],'6')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['friday']; ?><br />
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="7" <?php echo strpos($usersettings['allowed_days'],'7')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['saturday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="1" <?php echo strpos(getkey($usersettings, 'allowed_days', ''),'1')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['sunday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="2" <?php echo strpos(getkey($usersettings, 'allowed_days', ''),'2')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['monday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="3" <?php echo strpos(getkey($usersettings, 'allowed_days', ''),'3')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['tuesday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="4" <?php echo strpos(getkey($usersettings, 'allowed_days', ''),'4')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['wednesday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="5" <?php echo strpos(getkey($usersettings, 'allowed_days', ''),'5')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['thursday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="6" <?php echo strpos(getkey($usersettings, 'allowed_days', ''),'6')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['friday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="7" <?php echo strpos(getkey($usersettings, 'allowed_days', ''),'7')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['saturday']; ?><br />
             </td>
           </tr>
           <tr>
@@ -543,7 +543,7 @@ if($_GET['a']=='88') { // only do this bit if the user is being edited
 }
 
 // retain selected user groups between post
-if(is_array($_POST['user_groups'])) {
+if(isset($_POST['user_groups']) && is_array($_POST['user_groups'])) {
 	foreach($_POST['user_groups'] as $n => $v) $groupsarray[] = $v;
 }
 

@@ -247,9 +247,9 @@ if (is_array($evtOut))
     			</a>
     			  <span class="plus"> + </span>
     			<select id="stay" name="stay">
-    			  <option id="stay1" value="1" <?php echo $_REQUEST['stay']=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
-    			  <option id="stay2" value="2" <?php echo $_REQUEST['stay']=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
-    			  <option id="stay3" value=""  <?php echo $_REQUEST['stay']=='' ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
+    			  <option id="stay1" value="1" <?php echo getkey($_REQUEST, 'stay')=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
+    			  <option id="stay2" value="2" <?php echo getkey($_REQUEST, 'stay')=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
+    			  <option id="stay3" value=""  <?php echo empty($_REQUEST['stay']) ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
     			</select>		
     		  </li>
     		  <?php
@@ -275,7 +275,7 @@ if (is_array($evtOut))
 		<table border="0" cellspacing="0" cellpadding="3">
 		  <tr>
 			<td colspan="3">
-				<span id="blocked" class="warning"><?php if($userdata['blocked']==1 || ($userdata['blockeduntil']>time() && $userdata['blockeduntil']!=0) || $userdata['failedlogins']>3) { ?><b><?php echo $_lang['user_is_blocked']; ?></b><?php } ?></span><br />
+				<span id="blocked" class="warning"><?php if($userdata['blocked']==1 || ($userdata['blockeduntil']>time() && $userdata['blockeduntil']!=0) || getkey($userdata, 'failedlogins', 0)>3) { ?><b><?php echo $_lang['user_is_blocked']; ?></b><?php } ?></span><br />
 			</td>
 		  </tr>
 		  <?php if(!empty($userdata['id'])) { ?>
@@ -516,7 +516,7 @@ $dir->close();
           </tr>  
           <tr>
             <td class="warning"><b><?php echo $_lang["mgr_login_start"] ?></b></td>
-            <td ><input onchange="documentDirty=true;" type='text' maxlength='50' style="width: 100px;" name="manager_login_startup" value="<?php echo isset($_POST['manager_login_startup']) ? $_POST['manager_login_startup'] : $usersettings['manager_login_startup']; ?>"></td>
+            <td ><input onchange="documentDirty=true;" type='text' maxlength='50' style="width: 100px;" name="manager_login_startup" value="<?php echo isset($_POST['manager_login_startup']) ? $_POST['manager_login_startup'] : getkey($usersettings, 'manager_login_startup'); ?>"></td>
           </tr>
           <tr>
             <td width="200">&nbsp;</td>
@@ -543,7 +543,7 @@ $dir->close();
 
           <tr>
             <td nowrap class="warning"valign="top"><b><?php echo $_lang["login_allowed_ip"] ?></b></td>
-            <td ><input onchange="documentDirty=true;"  type="text" maxlength='255' style="width: 300px;" name="allowed_ip" value="<?php echo $usersettings['allowed_ip']; ?>" /></td>
+            <td ><input onchange="documentDirty=true;"  type="text" maxlength='255' style="width: 300px;" name="allowed_ip" value="<?php echo getkey($usersettings, 'allowed_ip'); ?>" /></td>
           </tr>
           <tr>
             <td width="200">&nbsp;</td>
@@ -555,13 +555,13 @@ $dir->close();
           <tr>
             <td nowrap class="warning"valign="top"><b><?php echo $_lang["login_allowed_days"] ?></b></td>
             <td>
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="1" <?php echo strpos($usersettings['allowed_days'],'1')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['sunday']; ?><br />
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="2" <?php echo strpos($usersettings['allowed_days'],'2')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['monday']; ?><br />
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="3" <?php echo strpos($usersettings['allowed_days'],'3')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['tuesday']; ?><br />
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="4" <?php echo strpos($usersettings['allowed_days'],'4')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['wednesday']; ?><br />
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="5" <?php echo strpos($usersettings['allowed_days'],'5')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['thursday']; ?><br />
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="6" <?php echo strpos($usersettings['allowed_days'],'6')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['friday']; ?><br />
-            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="7" <?php echo strpos($usersettings['allowed_days'],'7')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['saturday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="1" <?php echo strpos(getkey($usersettings, 'allowed_days'),'1')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['sunday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="2" <?php echo strpos(getkey($usersettings, 'allowed_days'),'2')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['monday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="3" <?php echo strpos(getkey($usersettings, 'allowed_days'),'3')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['tuesday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="4" <?php echo strpos(getkey($usersettings, 'allowed_days'),'4')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['wednesday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="5" <?php echo strpos(getkey($usersettings, 'allowed_days'),'5')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['thursday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="6" <?php echo strpos(getkey($usersettings, 'allowed_days'),'6')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['friday']; ?><br />
+            	<input onchange="documentDirty=true;" type="checkbox" name="allowed_days[]" value="7" <?php echo strpos(getkey($usersettings, 'allowed_days'),'7')!==false ? "checked='checked'":""; ?> /> <?php echo $_lang['saturday']; ?><br />
             </td>
           </tr>
           <tr>
@@ -816,7 +816,7 @@ if (is_array($evtOut))
 	}
 
 	// retain selected doc groups between post
-	if (is_array($_POST['user_groups'])) {
+	if (isset($_POST['user_groups']) && is_array($_POST['user_groups'])) {
 		foreach ($_POST['user_groups'] as $n => $v)
 			$groupsarray[] = $v;
 	}

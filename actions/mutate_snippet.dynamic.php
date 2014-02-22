@@ -272,9 +272,9 @@ function decode(s){
                 </a>
                   <span class="plus"> + </span>
                 <select id="stay" name="stay">
-                  <option id="stay1" value="1" <?php echo $_REQUEST['stay']=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
-                  <option id="stay2" value="2" <?php echo $_REQUEST['stay']=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
-                  <option id="stay3" value=""  <?php echo $_REQUEST['stay']=='' ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
+                  <option id="stay1" value="1" <?php echo getkey($_REQUEST, 'stay')=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
+                  <option id="stay2" value="2" <?php echo getkey($_REQUEST, 'stay')=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
+                  <option id="stay3" value=""  <?php echo empty($_REQUEST['stay']) ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
                 </select>
               </li>
               <?php
@@ -339,7 +339,7 @@ function decode(s){
         <!-- PHP text editor start -->
         <div class="section">
             <div class="sectionHeader">
-                <span style="float:right;"><?php echo $_lang['wrap_lines']?><input name="wrap" type="checkbox" <?php echo $content['wrap']== 1 ? "checked='checked'" : ""?> class="inputBox" onclick="setTextWrap(document.mutate.post,this.checked)" /></span>
+                <span style="float:right;"><?php echo $_lang['wrap_lines']?><input name="wrap" type="checkbox" <?php echo getkey($content, 'wrap')== 1 ? "checked='checked'" : ""?> class="inputBox" onclick="setTextWrap(document.mutate.post,this.checked)" /></span>
                 <?php echo $_lang['snippet_code']?>
             </div>
             <div class="sectionBody">

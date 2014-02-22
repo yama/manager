@@ -54,15 +54,15 @@ table.settings td.head {white-space:nowrap;vertical-align:top;padding-right:20px
   </tr>
   <tr>
     <td class="head"><?php echo $_lang['a83_ignore_ids_title']; ?></td>
-    <td><input type="text" name="ignore_ids" value="<?php echo $ignore_ids;?>" style="width:300px;" /></td>
+    <td><input type="text" name="ignore_ids" value="<?php echo isset($ignore_ids) ? $ignore_ids : '';?>" style="width:300px;" /></td>
   </tr>
   <tr>
     <td class="head"><?php echo $_lang['export_site.static.php4']; ?></td>
-    <td><input type="text" name="repl_before" value="<?php echo $repl_before; ?>" style="width:300px;" /></td>
+    <td><input type="text" name="repl_before" value="<?php echo isset($repl_before) ? $repl_before : ''; ?>" style="width:300px;" /></td>
   </tr>
   <tr>
     <td class="head"><?php echo $_lang['export_site.static.php5']; ?></td>
-    <td><input type="text" name="repl_after" value="<?php echo $repl_after; ?>" style="width:300px;" /></td>
+    <td><input type="text" name="repl_after" value="<?php echo isset($repl_after) ? $repl_after : ''; ?>" style="width:300px;" /></td>
   </tr>
   <tr>
     <td class="head"><?php echo $_lang['export_site_maxtime']; ?></td>

@@ -19,36 +19,36 @@ foreach($input as $k=>$v) {
     $input[$k] = $v;
 }
 
-$id                   = intval($input['id']);
-$oldusername          = $input['oldusername'];
+$id                   = intval(getkey($input, 'id', 0));
+$oldusername          = getkey($input, 'oldusername');
 $newusername          = !empty ($input['newusername']) ? trim($input['newusername']) : "New User";
 $esc_newusername      = $modx->db->escape($newusername);
-$fullname             = $input['fullname'];
-$genpassword          = $input['newpassword'];
-$passwordgenmethod    = $input['passwordgenmethod'];
-$passwordnotifymethod = $input['passwordnotifymethod'];
-$specifiedpassword    = $input['specifiedpassword'];
-$email                = $input['email'];
+$fullname             = getkey($input, 'fullname');
+$genpassword          = getkey($input, 'newpassword');
+$passwordgenmethod    = getkey($input, 'passwordgenmethod');
+$passwordnotifymethod = getkey($input, 'passwordnotifymethod');
+$specifiedpassword    = getkey($input, 'specifiedpassword');
+$email                = getkey($input, 'email');
 $esc_email            = $modx->db->escape($email);
-$oldemail             = $input['oldemail'];
-$phone                = $input['phone'];
-$mobilephone          = $input['mobilephone'];
-$fax                  = $input['fax'];
+$oldemail             = getkey($input, 'oldemail');
+$phone                = getkey($input, 'phone');
+$mobilephone          = getkey($input, 'mobilephone');
+$fax                  = getkey($input, 'fax');
 $dob                  = !empty ($input['dob']) ? ConvertDate($input['dob']) : 0;
-$country              = $input['country'];
-$street               = $input['street'];
-$city                 = $input['city'];
-$state                = $input['state'];
-$zip                  = $input['zip'];
+$country              = getkey($input, 'country');
+$street               = getkey($input, 'street');
+$city                 = getkey($input, 'city');
+$state                = getkey($input, 'state');
+$zip                  = getkey($input, 'zip');
 $gender               = !empty($input['gender']) ? $input['gender'] : 0;
-$photo                = $input['photo'];
-$comment              = $input['comment'];
+$photo                = getkey($input, 'photo');
+$comment              = getkey($input, 'comment');
 $role                 = !empty($input['role']) ? $input['role'] : 0;
 $failedlogincount     = !empty($input['failedlogincount']) ? $input['failedlogincount'] : 0;
 $blocked              = !empty($input['blocked']) ? $input['blocked'] : 0;
 $blockeduntil         = !empty($input['blockeduntil']) ? ConvertDate($input['blockeduntil']) : 0;
 $blockedafter         = !empty($input['blockedafter']) ? ConvertDate($input['blockedafter']) : 0;
-$user_groups          = $input['user_groups'];
+$user_groups          = getkey($input, 'user_groups');
 
 // verify password
 if ($passwordgenmethod == "spec" && $input['specifiedpassword'] != $input['confirmpassword']) {
@@ -295,8 +295,8 @@ switch ($input['mode']) {
 		$modx->invokeEvent("OnWebSaveUser", array (
 			"mode" => "upd",
 			"userid" => $id,
-			"username" => $newusername,
-			"userpassword" => $newpassword,
+			"username" => isset($newusername) ? $newusername : null,
+			"userpassword" => isset($newpassword) ? $newpassword : null,
 			"useremail" => $email,
 			"userfullname" => $fullname,
 			"oldusername" => (($oldusername != $newusername
@@ -441,7 +441,7 @@ function saveUserSettings($id) {
 	$modx->db->delete($tbl_web_user_settings,"webuser='{$esc_id}'");
 
 	foreach ($settings as $n) {
-		$vl = $_POST[$n];
+		$vl = getkey($_POST, $n, '');
 		if (is_array($vl)) {
 			$vl = implode(",", $vl);
 		}

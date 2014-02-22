@@ -37,7 +37,7 @@ function createResourceList($resourceTable,$action,$tablePre,$nameField = 'name'
             $insideUl = 1;
         }
 
-        if ($resourceTable == 'site_plugins') $class = $row['disabled'] ? ' class="disabledPlugin"' : '';
+        $class = ($resourceTable == 'site_plugins' && $row['disabled']) ? ' class="disabledPlugin"' : '';
         $output .= '<li><span'.$class.'><a href="index.php?id='.$row['id'].'&amp;a='.$action.'">'.$row['name'].' <small>(' . $row['id'] . ')</small></a>'.(!empty($modx_textdir) ? '&rlm;' : '').'</span>';
         
         if ($resourceTable == 'site_tmplvars') {

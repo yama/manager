@@ -80,8 +80,8 @@ if (isset($_GET['id'])) {
         exit;
     }
     $content = $modx->db->getRow($rs);
-    $_SESSION['itemname'] = $content['name'];
-    if ($content['locked'] == 1 && $_SESSION['mgrRole'] != 1) {
+    $_SESSION['itemname'] = getkey($content, 'name');
+    if (getkey($content, 'locked') == 1 && $_SESSION['mgrRole'] != 1) {
         $e->setError(3);
         $e->dumpError();
     }
@@ -320,7 +320,7 @@ function SetUrl(url, width, height, alt) {
     $evtOut = $modx->invokeEvent('OnModFormPrerender', array('id' => $id));
     if(is_array($evtOut)) echo implode('',$evtOut);
 ?>
-<input type="hidden" name="id" value="<?php echo $content['id']?>">
+<input type="hidden" name="id" value="<?php echo getkey($content, 'id');?>">
 <input type="hidden" name="mode" value="<?php echo $_GET['a']?>">
 
     <h1><?php echo $_lang['module_title']?></h1>
@@ -334,10 +334,10 @@ function SetUrl(url, width, height, alt) {
                   <span class="plus"> + </span>
                 <select id="stay" name="stay">
                   <?php if ($modx->hasPermission('new_module')) { ?>
-                  <option id="stay1" value="1" <?php echo $_REQUEST['stay']=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
+                  <option id="stay1" value="1" <?php echo getkey($_REQUEST, 'stay')=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
                   <?php } ?>
-                  <option id="stay2" value="2" <?php echo $_REQUEST['stay']=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
-                  <option id="stay3" value=""  <?php echo $_REQUEST['stay']=='' ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
+                  <option id="stay2" value="2" <?php echo getkey($_REQUEST, 'stay')=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
+                  <option id="stay3" value=""  <?php echo empty($_REQUEST['stay']) ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
                 </select>
               </li>
               <?php
@@ -369,16 +369,16 @@ function SetUrl(url, width, height, alt) {
 
     <table border="0" cellspacing="0" cellpadding="1">
         <tr><td align="left"><?php echo $_lang['module_name']?>:</td>
-            <td align="left"><input name="name" type="text" maxlength="100" value="<?php echo htmlspecialchars($content['name'])?>" class="inputBox" style="width:150px;" onchange="documentDirty=true;">&nbsp;<span class="warning" id="savingMessage">&nbsp;</span></td></tr>
+            <td align="left"><input name="name" type="text" maxlength="100" value="<?php echo htmlspecialchars(getkey($content, 'name'))?>" class="inputBox" style="width:150px;" onchange="documentDirty=true;">&nbsp;<span class="warning" id="savingMessage">&nbsp;</span></td></tr>
     </table>
 
     <!-- PHP text editor start -->
         <div class="sectionHeader">
-            <span style="float:right;><?php echo $_lang['wrap_lines']?><input name="wrap" type="checkbox"<?php echo $content['wrap']== 1 ? ' checked="checked"' : ''?> class="inputBox" onclick="setTextWrap(document.mutate.post,this.checked)" /></span>
+            <span style="float:right;><?php echo $_lang['wrap_lines']?><input name="wrap" type="checkbox"<?php echo getkey($content, 'wrap')== 1 ? ' checked="checked"' : ''?> class="inputBox" onclick="setTextWrap(document.mutate.post,this.checked)" /></span>
             <?php echo $_lang['module_code']?>
         </div>
         <div class="sectionBody">
-        <textarea dir="ltr" class="phptextarea" name="post" style="width:100%; height:370px;" wrap="<?php echo $content['wrap']== 1 ? 'soft' : 'off'?>" onchange="documentDirty=true;"><?php echo htmlspecialchars($content['modulecode'])?></textarea>
+        <textarea dir="ltr" class="phptextarea" name="post" style="width:100%; height:370px;" wrap="<?php echo getkey($content, 'wrap')== 1 ? 'soft' : 'off'?>" onchange="documentDirty=true;"><?php echo htmlspecialchars(getkey($content, 'modulecode'))?></textarea>
         </div>
     <!-- PHP text editor end -->
     </div>
@@ -390,11 +390,11 @@ function SetUrl(url, width, height, alt) {
 
         <table width="90%" border="0" cellspacing="0" cellpadding="0">
             <tr><td align="left" valign="top"><?php echo $_lang['guid']?>:</td>
-                <td align="left" valign="top"><input name="guid" type="text" maxlength="32" value="<?php echo (int) $_REQUEST['a'] == 107 ? createGUID() : $content['guid']?>" class="inputBox" onchange="documentDirty=true;" /><br /><br /></td></tr>
-            <tr><td align="left" valign="top"><input name="enable_sharedparams" type="checkbox"<?php echo $content['enable_sharedparams']==1 ? ' checked="checked"' : ''?> class="inputBox" onclick="documentDirty=true;" /> <span style="cursor:pointer" onclick="document.mutate.enable_sharedparams.click();"><?php echo $_lang['enable_sharedparams']?>:</span></td>
+                <td align="left" valign="top"><input name="guid" type="text" maxlength="32" value="<?php echo (int) $_REQUEST['a'] == 107 ? createGUID() : getkey($content, 'guid');?>" class="inputBox" onchange="documentDirty=true;" /><br /><br /></td></tr>
+            <tr><td align="left" valign="top"><input name="enable_sharedparams" type="checkbox"<?php echo getkey($content, 'enable_sharedparams')==1 ? ' checked="checked"' : ''?> class="inputBox" onclick="documentDirty=true;" /> <span style="cursor:pointer" onclick="document.mutate.enable_sharedparams.click();"><?php echo $_lang['enable_sharedparams']?>:</span></td>
                 <td align="left" valign="top"><span ><span class="comment"><?php echo $_lang['enable_sharedparams_msg']?></span></span><br /><br /></td></tr>
             <tr><td align="left" valign="top"><?php echo $_lang['module_config']?>:</td>
-                <td align="left" valign="top"><input name="properties" type="text" maxlength="65535" value="<?php echo $content['properties']?>" class="inputBox phptextarea" style="width:280px;" onchange="showParameters(this);documentDirty=true;" /><input type="button" value="<?php echo $_lang['update_params'] ?>" style="width:16px; margin-left:2px;" title="<?php echo $_lang['update_params']?>" /></td></tr>
+                <td align="left" valign="top"><input name="properties" type="text" maxlength="65535" value="<?php echo getkey($content, 'properties')?>" class="inputBox phptextarea" style="width:280px;" onchange="showParameters(this);documentDirty=true;" /><input type="button" value="<?php echo $_lang['update_params'] ?>" style="width:16px; margin-left:2px;" title="<?php echo $_lang['update_params']?>" /></td></tr>
             <tr id="displayparamrow"><td valign="top" align="left">&nbsp;</td>
                 <td align="left" id="displayparams">&nbsp;</td></tr>
         </table>
@@ -454,10 +454,10 @@ if (!$ds) {
 <script type="text/javascript">tp.addTabPage( document.getElementById( "tabInfo" ) );</script>
 <div class="section">
 <table>
-        <tr><td align="left" valign="top" colspan="2"><input name="disabled" type="checkbox" <?php echo $content['disabled'] == 1 ? 'checked="checked"' : ''?> value="on" class="inputBox" />
-            <span style="cursor:pointer" onclick="document.mutate.disabled.click();"><?php echo  $content['disabled'] == 1 ? '<span class="warning">'.$_lang['module_disabled'].'</span>' : $_lang['module_disabled']?></span></td></tr>
+        <tr><td align="left" valign="top" colspan="2"><input name="disabled" type="checkbox" <?php echo getkey($content, 'disabled') == 1 ? 'checked="checked"' : ''?> value="on" class="inputBox" />
+            <span style="cursor:pointer" onclick="document.mutate.disabled.click();"><?php echo  getkey($content, 'disabled') == 1 ? '<span class="warning">'.$_lang['module_disabled'].'</span>' : $_lang['module_disabled']?></span></td></tr>
         <tr><td align="left"><?php echo $_lang['module_desc']?>:&nbsp;&nbsp;</td>
-            <td align="left"><input name="description" type="text" maxlength="255" value="<?php echo $content['description']?>" class="inputBox" onchange="documentDirty=true;"></td></tr>
+            <td align="left"><input name="description" type="text" maxlength="255" value="<?php echo getkey($content, 'description')?>" class="inputBox" onchange="documentDirty=true;"></td></tr>
         <tr><td align="left"><?php echo $_lang['existing_category']?>:&nbsp;&nbsp;</td>
             <td align="left">
             <select name="categoryid" onchange="documentDirty=true;">
@@ -467,7 +467,7 @@ if (!$ds) {
                 $ds = getCategories();
                 if ($ds) {
                     foreach($ds as $n => $v) {
-                        echo "\t\t\t".'<option value="'.$v['id'].'"'.($content['category'] == $v['id'] ? ' selected="selected"' : '').'>'.htmlspecialchars($v['category'])."</option>\n";
+                        echo "\t\t\t".'<option value="'.$v['id'].'"'.(getkey($content, 'category') == $v['id'] ? ' selected="selected"' : '').'>'.htmlspecialchars($v['category'])."</option>\n";
                     }
                 }
 ?>
@@ -475,10 +475,10 @@ if (!$ds) {
         <tr><td align="left" valign="top" style="padding-top:5px;"><?php echo $_lang['new_category']?>:</td>
             <td align="left" valign="top" style="padding-top:5px;"><input name="newcategory" type="text" maxlength="45" value="" class="inputBox" onchange="documentDirty=true;"></td></tr>
         <tr><td align="left"><?php echo $_lang['icon']?> <span class="comment">(32x32)</span>:&nbsp;&nbsp;</td>
-            <td align="left"><input onchange="documentDirty=true;" type="text" maxlength="255" style="width: 235px;" name="icon" value="<?php echo $content['icon']?>" /> <input type="button" value="<?php echo $_lang['insert']?>" onclick="BrowseServer();" /></td></tr>
-        <tr><td align="left"><input name="enable_resource" title="<?php echo $_lang['enable_resource']?>" type="checkbox"<?php echo $content['enable_resource']==1 ? ' checked="checked"' : ''?> class="inputBox" onclick="documentDirty=true;" /> <span style="cursor:pointer" onclick="document.mutate.enable_resource.click();" title="<?php echo $_lang['enable_resource']?>"><?php echo $_lang["element"]?></span>:</td>
-            <td align="left"><input name="resourcefile" type="text" maxlength="255" value="<?php echo $content['resourcefile']?>" class="inputBox" onchange="documentDirty=true;" /></td></tr>
-        <tr><td align="left" valign="top" colspan="2"><input name="locked" type="checkbox"<?php echo $content['locked'] == 1 ? ' checked="checked"' : ''?> class="inputBox" />
+            <td align="left"><input onchange="documentDirty=true;" type="text" maxlength="255" style="width: 235px;" name="icon" value="<?php echo getkey($content, 'icon');?>" /> <input type="button" value="<?php echo $_lang['insert']?>" onclick="BrowseServer();" /></td></tr>
+        <tr><td align="left"><input name="enable_resource" title="<?php echo $_lang['enable_resource']?>" type="checkbox"<?php echo getkey($content, 'enable_resource')==1 ? ' checked="checked"' : ''?> class="inputBox" onclick="documentDirty=true;" /> <span style="cursor:pointer" onclick="document.mutate.enable_resource.click();" title="<?php echo $_lang['enable_resource']?>"><?php echo $_lang["element"]?></span>:</td>
+            <td align="left"><input name="resourcefile" type="text" maxlength="255" value="<?php echo getkey($content, 'resourcefile'); ?>" class="inputBox" onchange="documentDirty=true;" /></td></tr>
+        <tr><td align="left" valign="top" colspan="2"><input name="locked" type="checkbox"<?php echo getkey($content, 'locked') == 1 ? ' checked="checked"' : ''?> class="inputBox" />
             <span style="cursor:pointer" onclick="document.mutate.locked.click();"><?php echo $_lang['lock_module']?></span> <span class="comment"><?php echo $_lang['lock_module_msg']?></span></td></tr>
 </table>
 </div>
@@ -524,7 +524,7 @@ if (!$ds) {
     <p><?php echo $_lang['module_group_access_msg']?></p>
 <?php
     }
-    $chk = '';
+    $chks = '';
     $sql = "SELECT name, id FROM ".$tbl_membergroup_names;
     $rs = $modx->db->query($sql);
     $limit = $modx->db->getRecordCount($rs);
@@ -540,7 +540,7 @@ if (!$ds) {
         }
     }
     if($modx->hasPermission('access_permissions')) {
-        $chks = '<input type="checkbox" name="chkallgroups"'.(!$notPublic ? ' checked="checked"' : '').' onclick="makePublic(true)" /><span class="warning">'.$_lang['all_usr_groups'].'</span><br />' . "\n" . $chks;
+        $chks = '<input type="checkbox" name="chkallgroups"'.(!empty($notPublic) ? ' checked="checked"' : '').' onclick="makePublic(true)" /><span class="warning">'.$_lang['all_usr_groups'].'</span><br />' . "\n" . $chks;
     }
     echo $chks;
 ?>

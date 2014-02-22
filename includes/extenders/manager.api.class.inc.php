@@ -19,12 +19,27 @@ class ManagerAPI {
 	
 	function initPageViewState($id=0){
 		global $_PAGE;
+        if(!is_array($_PAGE)){
+            $_PAGE = array();
+        }
+
 		$vsid = isset($_SESSION["mgrPageViewSID"]) ? $_SESSION["mgrPageViewSID"] : '';
 		if($vsid!=$this->action) {
 			$_SESSION["mgrPageViewSDATA"] = array(); // new view state
 			$_SESSION["mgrPageViewSID"] = $id>0 ? $id:$this->action; // set id
 		}
 		$_PAGE['vs'] = &$_SESSION["mgrPageViewSDATA"]; // restore viewstate
+
+        if(!array_key_exists('vs', $_PAGE) || !is_array($_PAGE['vs'])){
+            $_PAGE['vs'] = array();
+        }
+        if(!isset($_PAGE['vs']['search'])){
+            $_PAGE['vs']['search'] = '';
+        }
+        if(!isset($_PAGE['vs']['lm'])){
+            $_PAGE['vs']['lm'] = '';
+        }
+        return $_PAGE;
 	}
 
 	// save page view state - not really necessary,

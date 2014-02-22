@@ -27,6 +27,10 @@ class DataSetPager {
 	var $selPageStyle;	
 	var $selPageClass;
 
+    public $renderPagerFnc;
+    public $renderPagerFncArgs;
+
+
 	function DataSetPager($id,$ds,$pageSize=10,$pageNumber=-1) {		
 		global $_PAGE; // use view state object
 		

@@ -131,10 +131,10 @@ if (is_array($evtOut))
                   <span class="plus"> + </span>
                 <select id="stay" name="stay">
                   <?php if ($modx->hasPermission('new_chunk')) { ?>
-                  <option id="stay1" value="1" <?php echo $_REQUEST['stay']=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
+                  <option id="stay1" value="1" <?php echo getkey($_REQUEST, 'stay')=='1' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay_new']?></option>
                   <?php } ?>
-                  <option id="stay2" value="2" <?php echo $_REQUEST['stay']=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
-                  <option id="stay3" value=""  <?php echo $_REQUEST['stay']=='' ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
+                  <option id="stay2" value="2" <?php echo getkey($_REQUEST, 'stay')=='2' ? ' selected="selected"' : ''?> ><?php echo $_lang['stay']?></option>
+                  <option id="stay3" value=""  <?php echo empty($_REQUEST['stay']) ? ' selected="selected"' : ''?>  ><?php echo $_lang['close']?></option>
                 </select>
               </li>
               <?php
@@ -160,10 +160,10 @@ if (is_array($evtOut))
     <p><?php echo $_lang['htmlsnippet_msg']?></p>
     <table>
         <tr><th><?php echo $_lang['htmlsnippet_name']?></th>
-            <td>{{&nbsp;<input name="name" type="text" maxlength="100" value="<?php echo htmlspecialchars($content['name'])?>" class="inputBox" style="width:250px;" onchange="documentDirty=true;">}}<span class="warning" id="savingMessage">&nbsp;</span></td></tr>
+            <td>{{&nbsp;<input name="name" type="text" maxlength="100" value="<?php echo htmlspecialchars(getkey($content, 'name'))?>" class="inputBox" style="width:250px;" onchange="documentDirty=true;">}}<span class="warning" id="savingMessage">&nbsp;</span></td></tr>
     <tr>
         <th><?php echo $_lang['htmlsnippet_desc']?></th>
-        <td><input name="description" type="text" maxlength="255" value="<?php echo htmlspecialchars($content['description'])?>" class="inputBox" style="width:300px;" onchange="documentDirty=true;"></td>
+        <td><input name="description" type="text" maxlength="255" value="<?php echo htmlspecialchars(getkey($content, 'description'))?>" class="inputBox" style="width:300px;" onchange="documentDirty=true;"></td>
     </tr>
     <tr>
         <th><?php echo $_lang['existing_category']?></th>
@@ -175,7 +175,7 @@ include_once(BOLMER_MANAGER_PATH.'includes/categories.inc.php');
 $ds = getCategories();
 if ($ds) {
 foreach ($ds as $n => $v) {
-    echo "\t\t\t\t".'<option value="'.$v['id'].'"'.($content['category'] == $v['id'] || (empty($content['category']) && $_POST['categoryid'] == $v['id']) ? ' selected="selected"' : '').'>'.htmlspecialchars($v['category'])."</option>\n";
+    echo "\t\t\t\t".'<option value="'.$v['id'].'"'.(getkey($content, 'category') == $v['id'] || (empty($content['category']) && $_POST['categoryid'] == $v['id']) ? ' selected="selected"' : '').'>'.htmlspecialchars($v['category'])."</option>\n";
 }
 }
 ?>
@@ -185,7 +185,7 @@ foreach ($ds as $n => $v) {
         <th><?php echo $_lang['new_category']?></th>
         <td><input name="newcategory" type="text" maxlength="45" value="<?php echo isset($content['newcategory']) ? $content['newcategory'] : ''?>" class="inputBox" style="width:300px;" onChange="documentDirty=true;"></td></tr>
 <?php if($modx->hasPermission('save_role')):?>
-    <tr><td colspan="2"><label style="display:block;"><input name="locked" type="checkbox"<?php echo $content['locked'] == 1 || $content['locked'] == 'on' ? ' checked="checked"' : ''?> class="inputBox" value="on" /> <?php echo $_lang['lock_htmlsnippet']?></label>
+    <tr><td colspan="2"><label style="display:block;"><input name="locked" type="checkbox"<?php echo getkey($content, 'locked') == 1 || getkey($content, 'locked') == 'on' ? ' checked="checked"' : ''?> class="inputBox" value="on" /> <?php echo $_lang['lock_htmlsnippet']?></label>
         <span class="comment"><?php echo $_lang['lock_htmlsnippet_msg']?></span></td>
     </tr>
 <?php endif;?>
@@ -196,7 +196,7 @@ foreach ($ds as $n => $v) {
             <?php echo $_lang['chunk_code']?>
         </div>
         <div class="sectionBody">
-        <textarea dir="ltr" class="phptextarea" name="post" style="width:100%; height:370px;" onChange="documentDirty=true;"><?php echo isset($content['post']) ? htmlspecialchars($content['post']) : htmlspecialchars($content['snippet'])?></textarea>
+        <textarea dir="ltr" class="phptextarea" name="post" style="width:100%; height:370px;" onChange="documentDirty=true;"><?php echo isset($content['post']) ? htmlspecialchars($content['post']) : htmlspecialchars(getkey($content, 'snippet'))?></textarea>
         </div>
     </div>
 

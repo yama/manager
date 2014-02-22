@@ -14,11 +14,10 @@ $tbl_web_users     = $modx->getFullTableName('web_users');
 $modx->manager->initPageViewState();
 
 // get and save search string
-if($_REQUEST['op']=='reset') {
+if(isset($_REQUEST['op']) && $_REQUEST['op'] == 'reset') {
 	$sqlQuery = $query = '';
 	$_PAGE['vs']['search']='';
-}
-else {
+} else {
 	$sqlQuery = $query = isset($_REQUEST['search'])? $_REQUEST['search']:$_PAGE['vs']['search'];
 	if(!is_numeric($sqlQuery)) $sqlQuery = $modx->db->escape($query);
 	$_PAGE['vs']['search'] = $query;
@@ -133,7 +132,7 @@ echo $cm->render();
 	$grd->colAligns="center,,,center,center";
 	$grd->colTypes="template:<a class='gridRowIcon' href='#' onclick='return showContentMenu([+id+],event);' title='".$_lang['click_to_context']."'><img src='[+icon+]' /></a>||template:<a href='index.php?a=115&id=[+id+]' title='".$_lang['click_to_view_details']."'>[+source+]</a>||date: " . $modx->toDateFormat(null, 'formatOnly') . ' %I:%M %p';
 	if($listmode=='1') $grd->pageSize=0;
-	if($_REQUEST['op']=='reset') $grd->pageNumber = 1;
+	if(isset($_REQUEST['op']) && $_REQUEST['op']=='reset') $grd->pageNumber = 1;
 	// render grid
 	echo $grd->render();
 	?>

@@ -7,7 +7,7 @@ if(!$modx->hasPermission('edit_user')) {
 }
 
 // get search string
-$query = $_REQUEST['search'];
+$query = isset($_REQUEST['search']) ? $_REQUEST['search'] : '';
 $sqlQuery = $modx->db->escape($query);
 ?>
 <br />

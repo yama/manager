@@ -7,15 +7,14 @@ if(!$modx->hasPermission('edit_user')) {
 }
 
 // initialize page view state - the $_PAGE object
-$modx->manager->initPageViewState();
+$_PAGE = $modx->manager->initPageViewState();
 
 // get and save search string
-if($_REQUEST['op']=='reset') {
+if(isset($_REQUEST['op']) && $_REQUEST['op']=='reset') {
 	$query = '';
 	$_PAGE['vs']['search']='';
-}
-else {
-	$query = isset($_REQUEST['search'])? $_REQUEST['search']:$_PAGE['vs']['search'];
+} else {
+	$query = isset($_REQUEST['search']) ? $_REQUEST['search']: $_PAGE['vs']['search'];
 	$sqlQuery = $modx->db->escape($query);
 	$_PAGE['vs']['search'] = $query;
 }
@@ -154,7 +153,7 @@ echo $cm->render();
 	                          'date: ' . $modx->toDateFormat(null, 'formatOnly') . ' %H:%M'));
 	if($listmode=='1')
 	  $grd->pageSize=0;
-	if($_REQUEST['op']=='reset')
+	if(isset($_REQUEST['op']) && $_REQUEST['op']=='reset')
 	  $grd->pageNumber = 1;
 	// render grid
 	echo $grd->render();

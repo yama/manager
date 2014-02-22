@@ -45,9 +45,9 @@ if(!is_numeric($id)) {
 	echo "Passed ID is not a valid number!";
 	exit;
 }
-
+$OP = getkey($_REQUEST, 'op');
 // take action
-switch ($_REQUEST['op']) {
+switch ($OP) {
 	case 'add':
 		$opids = explode(",",$_REQUEST['newids']);
 		if (count($opids)>0){

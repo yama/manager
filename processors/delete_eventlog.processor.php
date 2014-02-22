@@ -7,8 +7,8 @@ if(!$modx->hasPermission('delete_eventlog')) {
 ?>
 <?php
 
-$id=intval($_GET['id']);
-$clearlog = ($_GET['cls']==1 ? true:false);
+$id = intval(getkey($_GET, 'id', 0));
+$clearlog = !empty($_GET['cls']);
 
 // delete event log
 $sql = "DELETE FROM ".$modx->getFullTableName("event_log").(!$clearlog ? " WHERE id=".$id.";":"");

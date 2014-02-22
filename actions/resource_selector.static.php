@@ -10,9 +10,9 @@ $mxla = $modx_lang_attribute ? $modx_lang_attribute : 'en';
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html <?php echo ($modx_textdir ? 'dir="rtl" lang="' : 'lang="').$mxla.'" xml:lang="'.$mxla.'"'; ?>>
+<html <?php echo (!empty($modx_textdir) ? 'dir="rtl" lang="' : 'lang="').$mxla.'" xml:lang="'.$mxla.'"'; ?>>
 <head>
-	<title><?php echo $content["name"]." ".$_lang['element_selector_title']; ?></title>
+	<title><?php echo getkey(isset($content) ? $content : array(), "name")." ".$_lang['element_selector_title']; ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $modx_manager_charset; ?>" />
 	<link rel="stylesheet" type="text/css" href="media/style/<?php echo $modx->config['manager_theme']; ?>/style.css<?php echo "?$theme_refresher";?>" />
 <?php
@@ -49,7 +49,7 @@ if($_SESSION['browser']==='legacy_IE') {
 	$sm = strtolower($_REQUEST['sm']);
 
 	// get search string
-	$query = $_REQUEST['search'];
+	$query = getkey($_REQUEST, 'search');
 	$sqlQuery = $modx->db->escape($query);
 
 	// select SQL
@@ -202,7 +202,7 @@ if($_SESSION['browser']==='legacy_IE') {
 				$grd->colTypes = "template:<input type='".($sm=='m'? 'checkbox':'radio')."' name='id[]' value='[+id+]' onclick='setCheckbox(this);'> [+value+]";
 				$grd->colWidths = "45%";
 				$grd->fields="name,description";
-				if($_REQUEST['listmode']=='1') $grd->pageSize=0;
+				if(getkey($_REQUEST, 'listmode')=='1') $grd->pageSize=0;
 				echo $grd->render();
 			}			
 		?>

@@ -7,10 +7,10 @@ if(!$modx->hasPermission('edit_web_user')) {
 }
 
 // initialize page view state - the $_PAGE object
-$modx->manager->initPageViewState();
+$_PAGE = $modx->manager->initPageViewState();
 
 // get and save search string
-if($_REQUEST['op']=='reset') {
+if(isset($_REQUEST['op']) && $_REQUEST['op']=='reset') {
 	$query = '';
 	$_PAGE['vs']['search']='';
 }
@@ -111,7 +111,7 @@ echo $cm->render();
 	$sql = "SELECT wu.id,wu.username,wua.fullname,wua.email,IF(wua.gender=1,'".$_lang['user_male']."',IF(wua.gender=2,'".$_lang['user_female']."','-')) as 'gender',IF(wua.blocked,'".$_lang['yes']."','-') as 'blocked'" .
 			"FROM ".$modx->getFullTableName("web_users")." wu ".
 			"INNER JOIN ".$modx->getFullTableName("web_user_attributes")." wua ON wua.internalKey=wu.id ".
-			($sqlQuery ? " WHERE (wu.username LIKE '$sqlQuery%') OR (wua.fullname LIKE '%$sqlQuery%') OR (wua.email LIKE '$sqlQuery%')":"")." ".
+			(isset($sqlQuery) ? " WHERE (wu.username LIKE '$sqlQuery%') OR (wua.fullname LIKE '%$sqlQuery%') OR (wua.email LIKE '$sqlQuery%')":"")." ".
 			"ORDER BY username";
 	$ds = $modx->db->query($sql);
 	include_once BOLMER_MANAGER_PATH."includes/controls/datagrid.class.php";
@@ -127,7 +127,7 @@ echo $cm->render();
 	$grd->colAligns="center,,,,center,center";
 	$grd->colTypes="template:<a class='gridRowIcon' href='#' onclick='return showContentMenu([+id+],event);' title='".$_lang["click_to_context"]."'><img src='".$_style["icons_table"]."' /></a>||template:<a href='index.php?a=88&id=[+id+]' title='".$_lang["click_to_edit_title"]."'>[+value+]</a>";
 	if($listmode=='1') $grd->pageSize=0;
-	if($_REQUEST['op']=='reset') $grd->pageNumber = 1;
+	if(isset($_REQUEST['op']) && $_REQUEST['op']=='reset') $grd->pageNumber = 1;
 	// render grid
 	echo $grd->render();
 	?>

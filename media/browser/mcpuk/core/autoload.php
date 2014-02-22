@@ -63,6 +63,8 @@ if (ini_get("safe_mode"))
 
 // MAGIC AUTOLOAD CLASSES FUNCTION
 function __autoload($class) {
+    echo $class;
+    echo "<br />";
     if ($class == "uploader")
         require "core/uploader.php";
     elseif ($class == "browser")
