@@ -426,14 +426,6 @@ if(is_array($evtOut)) echo implode("",$evtOut);
 
     // display system events
     $evtnames = array();
-    $services = array(
-        "Parser Service Events",
-        "Manager Access Events",
-        "Web Access Service Events",
-        "Cache Service Events",
-        "Template Service Events",
-        "User Defined Events"
-    );
     $rs = $modx->db->select('*',$tbl_system_eventnames,'','service DESC, groupname, name');
     $limit = $modx->db->getRecordCount($rs);
     $srv = isset($srv) ? $srv : null;
@@ -447,7 +439,7 @@ if(is_array($evtOut)) echo implode("",$evtOut);
             $srv=$row['service'];
             if(count($evtnames)>0) echoEventRows($evtnames);
                 echo "<tr><td colspan='2'><div class='split' style='margin:10px 0;'></div></td></tr>";
-                echo "<tr><td colspan='2'><b>".$services[$srv-1]."</b></td></tr>";
+                echo "<tr><td colspan='2'><b>".$modx->event->getEventService($srv, 'Unknown')."</b></td></tr>";
         }
         // display group name
         if($grp!=$row['groupname']){
