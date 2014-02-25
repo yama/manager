@@ -281,7 +281,9 @@ class MakeTable {
 	function getCellAction($currentActionFieldValue) {
 		if ($this->cellAction) {
 			$cellAction= ' onClick="javascript:window.location=\''.$this->cellAction.$this->actionField.'='.urlencode($currentActionFieldValue).'\'" ';
-		}
+		}else{
+            $cellAction = '';
+        }
 		return $cellAction;
 	}
 	
@@ -292,7 +294,7 @@ class MakeTable {
 	 * @param $value The value of the cell.
 	 */
 	function createCellText($currentActionFieldValue, $value) {
-		$cell .= $value;
+		$cell = $value;
 		if ($this->linkAction) {
 			$cell= '<a href="'.$this->linkAction.$this->actionField.'='.urlencode($currentActionFieldValue).'">'.$cell.'</a>';
 		}
@@ -333,11 +335,12 @@ class MakeTable {
 	 */
 	function create($fieldsArray, $fieldHeadersArray=array(),$linkpage="") {
 	global $_lang;
+        $table = $header = '';
 		if (is_array($fieldsArray)) {
 			$i= 0;
 			foreach ($fieldsArray as $fieldName => $fieldValue) {
 				$table .= "\t<tr".$this->determineRowClass($i).">\n";
-				$currentActionFieldValue= $fieldValue[$this->actionField];
+				$currentActionFieldValue= isset($fieldValue[$this->actionField]) ? $fieldValue[$this->actionField] : null;
 				if (is_array($this->selectedValues)) {
 					$isChecked= array_search($currentActionFieldValue, $this->selectedValues)===false? 0 : 1;
 				} else {
@@ -416,7 +419,8 @@ class MakeTable {
 	 */
 	function createPagingNavigation($numRecords, $qs='') {
 		global $_lang;
-		$currentPage= (is_numeric($_GET['page']) ? $_GET['page'] : 1);
+        $nav = '';
+		$currentPage= (isset($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 1);
 		$numPages= ceil($numRecords / MAX_DISPLAY_RECORDS_NUM);
 		if ($numPages > 1) {
 			$currentURL= empty($qs)? '': '?'.$qs;
@@ -457,6 +461,7 @@ class MakeTable {
 	 */
 	function createPageLink($link='', $pageNum, $displayText, $currentPage=false, $qs='') {
 		global $modx;
+        $nav = '';
 		$orderBy= !empty($_GET['orderby'])? '&orderby=' . $_GET['orderby']: '';
 		$orderDir= !empty($_GET['orderdir'])? '&orderdir=' . $_GET['orderdir']: '';
 		if (!empty($qs)) $qs= "?$qs";
@@ -473,6 +478,7 @@ class MakeTable {
 	 * element.
 	 */
 	function addFormField($value, $isChecked) {
+        $field = '';
 		if ($this->formElementType) {
 			$checked= $isChecked? "checked ": "";
 			$field= "\t\t".'<td><input type="'.$this->formElementType.'" name="'. ($this->formElementName ? $this->formElementName : $value).'"  value="'.$value.'" '.$checked.'/></td>'."\n";

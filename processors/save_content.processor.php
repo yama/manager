@@ -8,35 +8,35 @@ if (!$modx->hasPermission('save_document')) {
 }
 
 // preprocess POST values
-$id = is_numeric($_POST['id']) ? $_POST['id'] : '';
-$introtext = $modx->db->escape($_POST['introtext']);
-$content = $modx->db->escape($_POST['ta']);
-$pagetitle = $modx->db->escape($_POST['pagetitle']);
-$description = $modx->db->escape($_POST['description']);
-$alias = $modx->db->escape($_POST['alias']);
-$link_attributes = $modx->db->escape($_POST['link_attributes']);
-$isfolder = $_POST['isfolder'];
-$richtext = $_POST['richtext'];
-$published = $_POST['published'];
-$parent = $_POST['parent'] != '' ? $_POST['parent'] : 0;
-$template = $_POST['template'];
-$menuindex = !empty($_POST['menuindex']) ? $_POST['menuindex'] : 0;
-$searchable = $_POST['searchable'];
-$cacheable = $_POST['cacheable'];
-$syncsite = $_POST['syncsite'];
-$pub_date = $_POST['pub_date'];
-$unpub_date = $_POST['unpub_date'];
+$id = (int)getkey($_POST, 'id', 0);
+$introtext = $modx->db->escape(getkey($_POST,'introtext', ''));
+$content = $modx->db->escape(getkey($_POST,'ta', ''));
+$pagetitle = $modx->db->escape(getkey($_POST,'pagetitle', ''));
+$description = $modx->db->escape(getkey($_POST,'description', ''));
+$alias = $modx->db->escape(getkey($_POST, 'alias', ''));
+$link_attributes = $modx->db->escape(getkey($_POST, 'link_attributes', ''));
+$isfolder = getkey($_POST, 'isfolder');
+$richtext = getkey($_POST, 'richtext');
+$published = getkey($_POST, 'published');
+$parent = (int)getkey($_POST, 'parent', 0);
+$template = (int)getkey($_POST, 'template');
+$menuindex = (int)getkey($_POST, 'menuindex', 0);
+$searchable = getkey($_POST, 'searchable');
+$cacheable = getkey($_POST, 'cacheable');
+$syncsite = getkey($_POST, 'syncsite');
+$pub_date = getkey($_POST, 'pub_date');
+$unpub_date = getkey($_POST, 'unpub_date');
 $document_groups = (isset($_POST['chkalldocs']) && $_POST['chkalldocs'] == 'on') ? array() : $_POST['docgroups'];
-$type = $_POST['type'];
-$keywords = $_POST['keywords'];
-$metatags = $_POST['metatags'];
-$contentType = $modx->db->escape($_POST['contentType']);
-$contentdispo = intval($_POST['content_dispo']);
-$longtitle = $modx->db->escape($_POST['longtitle']);
-$donthit = intval($_POST['donthit']);
-$menutitle = $modx->db->escape($_POST['menutitle']);
-$hidemenu = intval($_POST['hidemenu']);
-$aliasvisible = $_POST['alias_visible'];
+$type = getkey($_POST, 'type', 'document');
+$keywords = getkey($_POST, 'keywords');
+$metatags = getkey($_POST, 'metatags');
+$contentType = $modx->db->escape(getkey($_POST, 'contentType', 'text/html'));
+$contentdispo = intval(getkey($_POST, 'content_dispo', 0));
+$longtitle = $modx->db->escape(getkey($_POST, 'longtitle', ''));
+$donthit = intval(getkey($_POST, 'donthit', 0));
+$menutitle = $modx->db->escape(getkey($_POST, 'menutitle', ''));
+$hidemenu = intval(getkey($_POST, 'hidemenu', 0));
+$aliasvisible = getkey($_POST, 'alias_visible');
 
 /************* webber ********/
 $sd=isset($_POST['dir'])?'&dir='.$_POST['dir']:'&dir=DESC';
@@ -188,6 +188,8 @@ if (empty ($unpub_date)) {
 $tmplvars = array ();
 if ($_SESSION['mgrDocgroups']) {
 	$docgrp = implode(",", $_SESSION['mgrDocgroups']);
+}else{
+    $docgrp = '';
 }
 
 // ensure that user has not made this document inaccessible to themselves
@@ -509,8 +511,8 @@ switch ($actionToTake) {
 		}
 		
 		$row = $modx->db->getRow($rs);
-		$oldparent = $row['parent'];
-		$doctype = $row['type'];
+		$oldparent = getkey($row, 'parent', 0);
+		$doctype = getkey($row, 'type', 'document');
 
 		if ($id == $site_start && $published == 0) {
 			$modx->manager->saveFormValues(27);
