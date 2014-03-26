@@ -1,0 +1,3 @@
+[submodule "media/browser/mcpuk"]
+	path = media/browser/mcpuk
+	url = https://github.com/BolmerCMS/kcfinder.git
