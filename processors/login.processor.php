@@ -49,9 +49,9 @@ $tbl_user_attributes = $modx->getFullTableName('user_attributes');
 
 $username = $modx->db->escape($_REQUEST['username']);
 $givenPassword = $modx->db->escape($_REQUEST['password']);
-$captcha_code = $_REQUEST['captcha_code'];
-$rememberme= $_REQUEST['rememberme'];
-$failed_allowed = $modx->config["failed_login_attempts"];
+$captcha_code = getkey($_REQUEST, 'captcha_code');
+$rememberme= getkey($_REQUEST, 'rememberme');
+$failed_allowed = $modx->getConfig("failed_login_attempts");
 
 // invoke OnBeforeManagerLogin event
 $modx->invokeEvent("OnBeforeManagerLogin",
@@ -92,7 +92,7 @@ while ($row = $modx->db->getRow($rs)) {
     ${$row['setting_name']} = $row['setting_value'];
 }
 // blocked due to number of login errors.
-if($failedlogins>=$failed_allowed && $blockeduntildate>time()) {
+if(!empty($failedlogins) && $failedlogins>=$failed_allowed && $blockeduntildate>time()) {
     $modx->db->update('blocked=1',$tbl_user_attributes,"internalKey='{$internalKey}'");
     @session_destroy();
     session_unset();
@@ -101,7 +101,7 @@ if($failedlogins>=$failed_allowed && $blockeduntildate>time()) {
 }
 
 // blocked due to number of login errors, but get to try again
-if($failedlogins>=$failed_allowed && $blockeduntildate<time()) {
+if(!empty($failedlogins) && $failedlogins>=$failed_allowed && $blockeduntildate<time()) {
 	$fields = array();
 	$fields['failedlogincount'] = '0';
 	$fields['blockeduntil']     = time()-1;
@@ -109,7 +109,7 @@ if($failedlogins>=$failed_allowed && $blockeduntildate<time()) {
 }
 
 // this user has been blocked by an admin, so no way he's loggin in!
-if($blocked=="1") { 
+if(!empty($blocked)) {
     @session_destroy();
     session_unset();
     jsAlert($e->errors[903]);
@@ -117,7 +117,7 @@ if($blocked=="1") {
 }
 
 // blockuntil: this user has a block until date
-if($blockeduntildate>time()) {
+if(!empty($blockeduntildate) && $blockeduntildate>time()) {
     @session_destroy();
     session_unset();
     jsAlert("You are blocked and cannot log in! Please try again later.");
@@ -125,7 +125,7 @@ if($blockeduntildate>time()) {
 }
 
 // blockafter: this user has a block after date
-if($blockedafterdate>0 && $blockedafterdate<time()) {
+if(!empty($blockedafterdate) && $blockedafterdate<time()) {
     @session_destroy();
     session_unset();
     jsAlert("You are blocked and cannot log in! Please try again later.");
@@ -133,7 +133,7 @@ if($blockedafterdate>0 && $blockedafterdate<time()) {
 }
 
 // allowed ip
-if ($allowed_ip) {
+if (!empty($allowed_ip)) {
         if(($hostname = gethostbyaddr($_SERVER['REMOTE_ADDR'])) && ($hostname != $_SERVER['REMOTE_ADDR'])) {
           if(gethostbyname($hostname) != $_SERVER['REMOTE_ADDR']) {
             jsAlert("Your hostname doesn't point back to your IP!");
@@ -147,7 +147,7 @@ if ($allowed_ip) {
 }
 
 // allowed days
-if ($allowed_days) {
+if (!empty($allowed_days)) {
     $date = getdate();
     $day = $date['wday']+1;
     if (strpos($allowed_days,"$day")===false) {
@@ -212,7 +212,7 @@ if (!isset($rt)||!$rt||(is_array($rt) && !in_array(TRUE,$rt)))
 	}
 }
 
-if($use_captcha==1) {
+if(!empty($use_captcha)) {
 	if (!isset ($_SESSION['veriword'])) {
 		jsAlert('Captcha is not configured properly.');
 		return;
@@ -223,7 +223,7 @@ if($use_captcha==1) {
     }
 }
 
-if($newloginerror) {
+if(!empty($newloginerror)) {
 	//increment the failed login counter
     $failedlogins += 1;
     $sql = "update $dbase.`".$table_prefix."user_attributes` SET failedlogincount='$failedlogins' where internalKey=$internalKey";
@@ -280,7 +280,7 @@ $rs = $modx->db->query($sql);
 while ($row = $modx->db->getRow($rs,'num')) $dg[$i++]=$row[0];
 $_SESSION['mgrDocgroups'] = $dg;
 
-if($rememberme == '1') {
+if(!empty($rememberme)) {
     $_SESSION['modx.mgr.session.cookie.lifetime']= intval($modx->config['session.cookie.lifetime']);
 	
 	// Set a cookie separate from the session cookie with the username in it. 

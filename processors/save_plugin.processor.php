@@ -6,35 +6,35 @@ if(!$modx->hasPermission('save_plugin')) {
     $e->dumpError();    
 }
 
-$id = intval($_POST['id']);
-$name = $modx->db->escape(trim($_POST['name']));
-$description = $modx->db->escape($_POST['description']);
-$locked = $_POST['locked']=='on' ? '1' : '0' ;
-$plugincode = $modx->db->escape($_POST['post']);
-$properties = $modx->db->escape($_POST['properties']);
-$disabled = $_POST['disabled']=="on" ? '1' : '0';
-$moduleguid = $modx->db->escape($_POST['moduleguid']);
-$sysevents = $_POST['sysevents'];
+$id = intval(getkey($_POST,'id'));
+$name = $modx->db->escape(trim(getkey($_POST, 'name')));
+$description = $modx->db->escape(getkey($_POST, 'description'));
+$locked = getkey($_POST, 'locked')=='on' ? '1' : '0' ;
+$plugincode = $modx->db->escape(getkey($_POST, 'post'));
+$properties = $modx->db->escape(getkey($_POST, 'properties'));
+$disabled = getkey($_POST, 'disabled')=="on" ? '1' : '0';
+$moduleguid = $modx->db->escape(getkey($_POST, 'moduleguid'));
+$sysevents = getkey($_POST, 'sysevents');
 
 //Kyle Jaebker - added category support
-if (empty($_POST['newcategory']) && $_POST['categoryid'] > 0) {
+if (empty($_POST['newcategory']) && getkey($_POST, 'categoryid') > 0) {
     $categoryid = $modx->db->escape($_POST['categoryid']);
-} elseif (empty($_POST['newcategory']) && $_POST['categoryid'] <= 0) {
+} elseif (empty($_POST['newcategory']) && getkey($_POST, 'categoryid', 0) <= 0) {
     $categoryid = '0';
 } else {
     include_once "categories.inc.php";
-    $catCheck = checkCategory($modx->db->escape($_POST['newcategory']));
+    $catCheck = checkCategory($modx->db->escape(getkey($_POST, 'newcategory')));
     if ($catCheck) {
         $categoryid = $catCheck;
     } else {
-        $categoryid = newCategory($_POST['newcategory']);
+        $categoryid = newCategory(getkey($_POST, 'newcategory'));
     }
 }
 
 if($name=="") $name = "Untitled plugin";
 
 $tblSitePlugins = $modx->getFullTableName('site_plugins');
-switch ($_POST['mode']) {
+switch (getkey($_POST, 'mode')) {
     case '101':
 
         // invoke OnBeforePluginFormSave event

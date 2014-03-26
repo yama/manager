@@ -7,7 +7,7 @@ if(!$modx->hasPermission('bk_manager')) {
 
 $dbase = trim($dbase,'`');
 
-if(!isset($modx->config['snapshot_path']))
+if(is_null($modx->getConfig('snapshot_path')))
 {
 	if(is_dir(BOLMER_BASE_PATH . 'temp/backup/')) $modx->config['snapshot_path'] = BOLMER_BASE_PATH . 'temp/backup/';
 	else $modx->config['snapshot_path'] = BOLMER_BASE_PATH . 'assets/backup/';
@@ -34,7 +34,7 @@ if ($mode=='restore1')
 }
 elseif ($mode=='restore2')
 {
-	$path = $modx->config['snapshot_path'] . $_POST['filename'];
+	$path = $modx->getConfig('snapshot_path') . getkey($_POST, 'filename');
 	if(file_exists($path))
 	{
 		$source = file_get_contents($path);
@@ -79,12 +79,12 @@ elseif ($mode=='backup')
 }
 elseif ($mode=='snapshot')
 {
-	if(!is_dir(rtrim($modx->config['snapshot_path'],'/')))
+	if(!is_dir(rtrim($modx->getConfig('snapshot_path'),'/')))
 	{
-		mkdir(rtrim($modx->config['snapshot_path'],'/'));
-		@chmod(rtrim($modx->config['snapshot_path'],'/'), 0777);
+		mkdir(rtrim($modx->getConfig('snapshot_path'),'/'));
+		@chmod(rtrim($modx->getConfig('snapshot_path'),'/'), 0777);
 	}
-	if(!is_file("{$modx->config['snapshot_path']}.htaccess"))
+	if(!is_file("{$modx->getConfig('snapshot_path')}.htaccess"))
 	{
 		$htaccess = "order deny,allow\ndeny from all\n";
 		file_put_contents("{$modx->config['snapshot_path']}.htaccess",$htaccess);

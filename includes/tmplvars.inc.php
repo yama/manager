@@ -5,7 +5,6 @@
 		global $_style;
 		global $_lang;
 		global $content;
-
 		$field_html ='';
 		$field_value = ($field_value!="" ? $field_value : $default_text);
 		if(substr($field_value, 0, 5) == "@EVAL") {
@@ -141,13 +140,13 @@
 								lastImageCtrl = ctrl;
 								var w = screen.width * 0.5;
 								var h = screen.height * 0.5;
-								OpenServerBrowser('".BOLMER_MANAGER_URL."media/browser/mcpuk/browser.php?Type=images', w, h);
+								OpenServerBrowser('".BOLMER_MANAGER_URL."media/browser/mcpuk/browse.php?Type=images&cms=".CMS_NAME."&lang=".$modx->getShortLangName($modx->getConfig('manager_language'))."', w, h);
 							}
 							function BrowseFileServer(ctrl) {
 								lastFileCtrl = ctrl;
 								var w = screen.width * 0.5;
 								var h = screen.height * 0.5;
-								OpenServerBrowser('".BOLMER_MANAGER_URL."media/browser/mcpuk/browser.php?Type=files', w, h);
+								OpenServerBrowser('".BOLMER_MANAGER_URL."media/browser/mcpuk/browser.php?Type=files&cms=".CMS_NAME."&lang=".$modx->getShortLangName($modx->getConfig('manager_language'))."', w, h);
 							}
 							function SetUrlChange(el) {
 								if ('createEvent' in document) {
@@ -211,13 +210,13 @@
 								lastImageCtrl = ctrl;
 								var w = screen.width * 0.5;
 								var h = screen.height * 0.5;
-								OpenServerBrowser('".BOLMER_MANAGER_URL."media/browser/mcpuk/browser.php?Type=images', w, h);
+								OpenServerBrowser('".BOLMER_MANAGER_URL."media/browser/mcpuk/browser.php?Type=images&cms=".CMS_NAME."&lang=".$modx->getShortLangName($modx->getConfig('manager_language'))."', w, h);
 							}
 							function BrowseFileServer(ctrl) {
 								lastFileCtrl = ctrl;
 								var w = screen.width * 0.5;
 								var h = screen.height * 0.5;
-								OpenServerBrowser('".BOLMER_MANAGER_URL."media/browser/mcpuk/browser.php?Type=files', w, h);
+								OpenServerBrowser('".BOLMER_MANAGER_URL."media/browser/mcpuk/browser.php?Type=files&cms=".CMS_NAME."&lang=".$modx->getShortLangName($modx->getConfig('manager_language'))."', w, h);
 							}
 							function SetUrlChange(el) {
 								if ('createEvent' in document) {

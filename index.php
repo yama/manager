@@ -161,7 +161,6 @@ $length_eng_lang = count($_lang);
 if($manager_language!="english" && file_exists(BOLMER_MANAGER_PATH."includes/lang/".$manager_language.".inc.php")) {
     include_once "lang/".$manager_language.".inc.php";
 }
-
 $s = array('[+MGR_DIR+]');
 $r = array(MGR_DIR);
 foreach($_lang as $k=>$v)
@@ -231,7 +230,7 @@ if (isset($_POST['updateMsgCount']) && $modx->hasPermission('messages')) {
 $modx->manager->action = $action;
 
 // attempt to foil some simple types of CSRF attacks
-if (isset($modx->config['validate_referer']) && intval($modx->config['validate_referer'])) {
+if (intval($modx->getConfig('validate_referer'))) {
     if (isset($_SERVER['HTTP_REFERER'])) {
         $referer = $_SERVER['HTTP_REFERER'];
 

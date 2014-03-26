@@ -776,7 +776,7 @@ if (is_array($evtOut))
 			function BrowseServer() {
 				var w = screen.width * 0.7;
 				var h = screen.height * 0.7;
-				OpenServerBrowser("<?php echo BOLMER_MANAGER_URL; ?>media/browser/mcpuk/browser.php?Type=images", w, h);
+				OpenServerBrowser("<?php echo BOLMER_MANAGER_URL; ?>media/browser/mcpuk/browser.php?Type=images&cms=<?=CMS_NAME;?>&lang=<?=$modx->getShortLangName($modx->getConfig('manager_language'));?>", w, h);
 			}
 			function SetUrl(url, width, height, alt){
 				document.userform.photo.value = url;
