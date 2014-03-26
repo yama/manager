@@ -774,7 +774,7 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
                         $row = $modx->db->getRow($rs);
                         if ($row['type'] == 'richtext' || $row['type'] == 'htmlarea') {
                             // Add richtext editor to the list
-                            if (is_array($replace_richtexteditor)) {
+                            if (isset($replace_richtexteditor) && is_array($replace_richtexteditor)) {
                                 $replace_richtexteditor = array_merge($replace_richtexteditor, array(
                                     "tv" . $row['id'],
                                 ));

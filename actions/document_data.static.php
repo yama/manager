@@ -318,7 +318,7 @@ function movedocument() {
 			<tr><td colspan="2"><b><?php echo $_lang['page_data_changes']?></b></td></tr>
 			<tr><td><?php echo $_lang['page_data_created']?>: </td>
 				<td><?php echo $modx->toDateFormat($content['createdon']+$server_offset_time)?> (<b><?php echo $createdbyname?></b>)</td></tr>
-<?php				if ($editedbyname != '') { ?>
+<?php				if (!empty($editedbyname)) { ?>
 			<tr><td><?php echo $_lang['page_data_edited']?>: </td>
 				<td><?php echo $modx->toDateFormat($content['editedon']+$server_offset_time)?> (<b><?php echo $editedbyname?></b>)</td></tr>
 <?php				} ?>
