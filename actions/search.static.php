@@ -87,7 +87,7 @@ if(isset($_REQUEST['submitok'])) {
     }
 
     $tbl_site_content = $modx->getFullTableName('site_content');
-    $sqladd .= $searchid!=='0'        ? " AND id='{$searchid}' " : '';
+    $sqladd = $searchid!=='0'        ? " AND id='{$searchid}' " : '';
     $sqladd .= $searchtitle!=''     ? " AND pagetitle LIKE '%{$searchtitle}%' " : '';
     $sqladd .= $searchlongtitle!='' ? " AND longtitle LIKE '%{$searchlongtitle}%' " : '';
     $sqladd .= $search_alias!='' ? " AND alias LIKE '%{$search_alias}%' " : '';
@@ -121,18 +121,18 @@ if($limit<1) {
      <?php
     // icons by content type
     $icons = array(
-        'application/rss+xml' => $_style["tree_page_rss"],
-        'application/pdf' => $_style["tree_page_pdf"],
-        'application/vnd.ms-word' => $_style["tree_page_word"],
-        'application/vnd.ms-excel' => $_style["tree_page_excel"],
-        'text/css' => $_style["tree_page_css"],
-        'text/html' => $_style["tree_page_html"],
-        'text/plain' => $_style["tree_page"],
-        'text/xml' => $_style["tree_page_xml"],
-        'text/javascript' => $_style["tree_page_js"],
-        'image/gif' => $_style["tree_page_gif"],
-        'image/jpg' => $_style["tree_page_jpg"],
-        'image/png' => $_style["tree_page_png"]
+        'application/rss+xml' => getkey($_style, "tree_page_rss"),
+        'application/pdf' => getkey($_style, "tree_page_pdf"),
+        'application/vnd.ms-word' => getkey($_style, "tree_page_word"),
+        'application/vnd.ms-excel' => getkey($_style, "tree_page_excel"),
+        'text/css' => getkey($_style, "tree_page_css"),
+        'text/html' => getkey($_style, "tree_page_html"),
+        'text/plain' => getkey($_style, "tree_page"),
+        'text/xml' => getkey($_style, "tree_page_xml"),
+        'text/javascript' => getkey($_style, "tree_page_js"),
+        'image/gif' => getkey($_style, "tree_page_gif"),
+        'image/jpg' => getkey($_style, "tree_page_jpg"),
+        'image/png' => getkey($_style, "tree_page_png")
     );
 
 while ($row = $modx->db->getRow($rs)) {

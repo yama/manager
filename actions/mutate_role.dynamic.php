@@ -85,8 +85,8 @@ function deletedocument() {
 
 </script>
 <form action="index.php?a=36" method="post" name="userform" enctype="multipart/form-data">
-<input type="hidden" name="mode" value="<?php echo $_GET['a'] ?>">
-<input type="hidden" name="id" value="<?php echo $_GET['id'] ?>">
+<input type="hidden" name="mode" value="<?php echo getkey($_GET, 'a', 38) ?>">
+<input type="hidden" name="id" value="<?php echo getkey($_GET, 'id', 0); ?>">
 
 <h1><?php echo $_lang['role_title']; ?></h1>
 

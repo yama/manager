@@ -81,6 +81,11 @@ echo $cm->render();
 		contextm.style.visibility = "hidden";
 	});
 </script>
+<?php
+if(empty($id)){
+    $id = 0;
+}
+?>
 <form name="resource" method="post">
 <input type="hidden" name="id" value="<?php echo $id; ?>" />
 <input type="hidden" name="listmode" value="<?php echo $listmode; ?>" />

@@ -154,7 +154,7 @@ for ($i=0;$i<count($warnings);$i++) {
             break;
         case $_lang['configcheck_installer'] :
             $warnings[$i][1] = $_lang['configcheck_installer_msg'];
-            if(!$_SESSION["mgrConfigCheck"]) $modx->logEvent(0,3,$warnings[$i][1],$_lang['configcheck_installer']);
+            if(!getkey($_SESSION, "mgrConfigCheck")) $modx->logEvent(0,3,$warnings[$i][1],$_lang['configcheck_installer']);
             break;
         case $_lang['configcheck_cache'] :
             $warnings[$i][1] = $_lang['configcheck_cache_msg'];

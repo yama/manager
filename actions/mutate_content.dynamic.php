@@ -618,12 +618,15 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
                 $rs = $modx->db->query($sql);
 
                 $currentCategory = '';
+                $closeOptGroup = false;
+                $thisCategory = null;
                 while ($row = $modx->db->getRow($rs)) {
                     $thisCategory = $row['category'];
                     if($thisCategory == null) {
                         $thisCategory = $_lang["no_category"];
                     }
                     if($thisCategory != $currentCategory) {
+
                         if($closeOptGroup) {
                             echo "\t\t\t\t\t</optgroup>\n";
                         }
@@ -704,13 +707,13 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
                 </td></tr>
         </table>
 
-<?php if (getkey($content, 'type') == 'document' || $_REQUEST['a'] == '4') { ?>
+<?php if (getkey($content, 'type') == 'document' || getkey($_REQUEST, 'a') == '4') { ?>
         <!-- Content -->
             <div class="sectionHeader" id="content_header"><?php echo $_lang['resource_content']?></div>
             <div class="sectionBody" id="content_body">
 <?php
-            if (($content['richtext'] == 1 || $_REQUEST['a'] == '4') && $use_editor == 1) {
-                $htmlContent = $content['content'];
+            if ((getkey($content, 'richtext') == 1 || getkey($_REQUEST, 'a') == '4') && $use_editor == 1) {
+                $htmlContent = getkey($content, 'content');
 ?>
                 <div style="width:100%">
                     <textarea id="ta" name="ta" cols="" rows="" style="width:100%; height: 400px;" onchange="documentDirty=true;"><?php echo $modx->htmlspecialchars($htmlContent)?></textarea>
@@ -836,7 +839,7 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
             </tr>
             <tr style="height: 24px;">
                 <td><span class="warning"><?php echo $_lang['page_data_publishdate']?></span></td>
-                <td><input id="pub_date" <?php echo $mx_can_pub ?>name="pub_date" class="DatePicker" value="<?php echo $content['pub_date']=="0" || !isset($content['pub_date']) ? '' : $modx->toDateFormat($content['pub_date'])?>" onblur="documentDirty=true;" />
+                <td><input id="pub_date" <?php echo $mx_can_pub ?>name="pub_date" class="DatePicker" value="<?php echo getkey($content, 'pub_date')=="0" || !isset($content['pub_date']) ? '' : $modx->toDateFormat($content['pub_date'])?>" onblur="documentDirty=true;" />
                 <a href="javascript:void(0);" onclick="javascript:document.mutate.pub_date.value=''; return true;" onmouseover="window.status='<?php echo $_lang['remove_date']?>'; return true;" onmouseout="window.status=''; return true;" style="cursor:pointer; cursor:hand;">
                 <img src="<?php echo $_style["icons_cal_nodate"] ?>" width="16" height="16" border="0" alt="<?php echo $_lang['remove_date']?>" /></a>
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['page_data_publishdate_help']?>" onclick="alert(this.alt);" style="cursor:help;" />
@@ -848,7 +851,7 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
             </tr>
             <tr style="height: 24px;">
                 <td><span class="warning"><?php echo $_lang['page_data_unpublishdate']?></span></td>
-                <td><input id="unpub_date" <?php echo $mx_can_pub ?>name="unpub_date" class="DatePicker" value="<?php echo $content['unpub_date']=="0" || !isset($content['unpub_date']) ? '' : $modx->toDateFormat($content['unpub_date'])?>" onblur="documentDirty=true;" />
+                <td><input id="unpub_date" <?php echo $mx_can_pub ?>name="unpub_date" class="DatePicker" value="<?php echo getkey($content, 'unpub_date')=="0" || !isset($content['unpub_date']) ? '' : $modx->toDateFormat($content['unpub_date'])?>" onblur="documentDirty=true;" />
                 <a onclick="document.mutate.unpub_date.value=''; return true;" onmouseover="window.status='<?php echo $_lang['remove_date']?>'; return true;" onmouseout="window.status=''; return true;" style="cursor:pointer; cursor:hand">
                 <img src="<?php echo $_style["icons_cal_nodate"] ?>" width="16" height="16" border="0" alt="<?php echo $_lang['remove_date']?>" /></a>
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['page_data_unpublishdate_help']?>" onclick="alert(this.alt);" style="cursor:help;" />
@@ -869,28 +872,28 @@ if ($_SESSION['mgrRole'] == 1 || $_REQUEST['a'] != '27' || $_SESSION['mgrInterna
             <tr style="height: 24px;"><td><span class="warning"><?php echo $_lang['resource_type']?></span></td>
                 <td><select name="type" class="inputBox" onchange="documentDirty=true;" style="width:200px">
 
-                    <option value="document"<?php echo (($content['type'] == "document" || $_REQUEST['a'] == '85' || $_REQUEST['a'] == '4') ? ' selected="selected"' : "");?> ><?php echo $_lang["resource_type_webpage"];?></option>
-                    <option value="reference"<?php echo (($content['type'] == "reference" || $_REQUEST['a'] == '72') ? ' selected="selected"' : "");?> ><?php echo $_lang["resource_type_weblink"];?></option>
+                    <option value="document"<?php echo ((getkey($content, 'type') == "document" || $_REQUEST['a'] == '85' || $_REQUEST['a'] == '4') ? ' selected="selected"' : "");?> ><?php echo $_lang["resource_type_webpage"];?></option>
+                    <option value="reference"<?php echo ((getkey($content, 'type') == "reference" || $_REQUEST['a'] == '72') ? ' selected="selected"' : "");?> ><?php echo $_lang["resource_type_weblink"];?></option>
                     </select>
                     &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_type_message']?>" onclick="alert(this.alt);" style="cursor:help;" /></td></tr>
 
             <tr style="height: 24px;"><td><span class="warning"><?php echo $_lang['page_data_contentType']?></span></td>
                 <td><select name="contentType" class="inputBox" onchange="documentDirty=true;" style="width:200px">
             <?php
-                if (!$content['contentType'])
+                if (!getkey($content,'contentType'))
                     $content['contentType'] = 'text/html';
                 $custom_contenttype = (isset ($custom_contenttype) ? $custom_contenttype : "text/html,text/plain,text/xml");
                 $ct = explode(",", $custom_contenttype);
                 for ($i = 0; $i < count($ct); $i++) {
-                    echo "\t\t\t\t\t".'<option value="'.$ct[$i].'"'.($content['contentType'] == $ct[$i] ? ' selected="selected"' : '').'>'.$ct[$i]."</option>\n";
+                    echo "\t\t\t\t\t".'<option value="'.$ct[$i].'"'.(getkey($content, 'contentType') == $ct[$i] ? ' selected="selected"' : '').'>'.$ct[$i]."</option>\n";
                 }
             ?>
                 </select>
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['page_data_contentType_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td></tr>
             <tr style="height: 24px;"><td><span class="warning"><?php echo $_lang['resource_opt_contentdispo']?></span></td>
                 <td><select name="content_dispo" size="1" onchange="documentDirty=true;" style="width:200px">
-                    <option value="0"<?php echo !$content['content_dispo'] ? ' selected="selected"':''?>><?php echo $_lang['inline']?></option>
-                    <option value="1"<?php echo $content['content_dispo']==1 ? ' selected="selected"':''?>><?php echo $_lang['attachment']?></option>
+                    <option value="0"<?php echo !getkey($content, 'content_dispo') ? ' selected="selected"':''?>><?php echo $_lang['inline']?></option>
+                    <option value="1"<?php echo getkey($content, 'content_dispo')==1 ? ' selected="selected"':''?>><?php echo $_lang['attachment']?></option>
                 </select>
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_opt_contentdispo_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td></tr>
 
@@ -918,8 +921,8 @@ if ($_SESSION['mgrRole'] == 1 || $_REQUEST['a'] != '27' || $_SESSION['mgrInterna
 
             <tr style="height: 24px;">
                 <td width="150"><span class="warning"><?php echo $_lang['resource_opt_folder']?></span></td>
-                <td><input name="isfoldercheck" type="checkbox" class="checkbox" <?php echo ($content['isfolder']==1||$_REQUEST['a']=='85') ? "checked" : ''?> onclick="changestate(document.mutate.isfolder);" />
-                <input type="hidden" name="isfolder" value="<?php echo ($content['isfolder']==1||$_REQUEST['a']=='85') ? 1 : 0?>" onchange="documentDirty=true;" />
+                <td><input name="isfoldercheck" type="checkbox" class="checkbox" <?php echo (getkey($content, 'isfolder')==1||$_REQUEST['a']=='85') ? "checked" : ''?> onclick="changestate(document.mutate.isfolder);" />
+                <input type="hidden" name="isfolder" value="<?php echo (getkey($content, 'isfolder')==1||$_REQUEST['a']=='85') ? 1 : 0?>" onchange="documentDirty=true;" />
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_opt_folder_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td>
             </tr>
 
@@ -934,13 +937,13 @@ if ($_SESSION['mgrRole'] == 1 || $_REQUEST['a'] != '27' || $_SESSION['mgrInterna
 
             <tr style="height: 24px;">
                 <td><span class="warning"><?php echo $_lang['resource_opt_richtext']?></span></td>
-                <td><input name="richtextcheck" type="checkbox" class="checkbox" <?php echo $content['richtext']==0 && $_REQUEST['a']=='27' ? '' : "checked"?> onclick="changestate(document.mutate.richtext);" />
-                <input type="hidden" name="richtext" value="<?php echo $content['richtext']==0 && $_REQUEST['a']=='27' ? 0 : 1?>" onchange="documentDirty=true;" />
+                <td><input name="richtextcheck" type="checkbox" class="checkbox" <?php echo getkey($content, 'richtext')==0 && $_REQUEST['a']=='27' ? '' : "checked"?> onclick="changestate(document.mutate.richtext);" />
+                <input type="hidden" name="richtext" value="<?php echo getkey($content, 'richtext')==0 && $_REQUEST['a']=='27' ? 0 : 1?>" onchange="documentDirty=true;" />
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_opt_richtext_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td>
             </tr>
             <tr style="height: 24px;">
                 <td width="150"><span class="warning"><?php echo $_lang['track_visitors_title']?></span></td>
-                <td><input name="donthitcheck" type="checkbox" class="checkbox" <?php echo ($content['donthit']!=1) ? 'checked="checked"' : ''?> onclick="changestate(document.mutate.donthit);" /><input type="hidden" name="donthit" value="<?php echo ($content['donthit']==1) ? 1 : 0?>" onchange="documentDirty=true;" />
+                <td><input name="donthitcheck" type="checkbox" class="checkbox" <?php echo (getkey($content, 'donthit')!=1) ? 'checked="checked"' : ''?> onclick="changestate(document.mutate.donthit);" /><input type="hidden" name="donthit" value="<?php echo (getkey($content, 'donthit')==1) ? 1 : 0?>" onchange="documentDirty=true;" />
                 &nbsp;&nbsp;<img src="<?php echo $_style["icons_tooltip_over"]?>" onmouseover="this.src='<?php echo $_style["icons_tooltip"]?>';" onmouseout="this.src='<?php echo $_style["icons_tooltip_over"]?>';" alt="<?php echo $_lang['resource_opt_trackvisit_help']?>" onclick="alert(this.alt);" style="cursor:help;" /></td>
             </tr>
             <tr style="height: 24px;">

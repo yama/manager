@@ -42,7 +42,7 @@ function convertdate($date) {
 
 $rs = $modx->db->select('DISTINCT internalKey, username, action, itemid, itemname', $modx->getFullTableName('manager_log'));
 $logs = $modx->db->makeArray($rs);
-
+$number_of_logs = 100;
 ?>
 <script type="text/javascript" src="media/calendar/datepicker.js"></script>
 <script type="text/javascript">
@@ -74,8 +74,9 @@ window.addEvent('domready', function() {
 <?php
 	// get all users currently in the log
 	$logs_user = record_sort(array_unique_multi($logs, 'internalKey'), 'username');
+    $requestUser = isset($_REQUEST['searchuser']) ? $_REQUEST['searchuser'] : '';
 	foreach ($logs_user as $row) {
-		$selectedtext = $row['internalKey'] == $_REQUEST['searchuser'] ? ' selected="selected"' : '';
+		$selectedtext = $row['internalKey'] == $requestUser ? ' selected="selected"' : '';
 		echo "\t\t".'<option value="'.$row['internalKey'].'"'.$selectedtext.'>'.$row['username']."</option>\n";
 	}
 ?>	</select>
@@ -92,8 +93,10 @@ window.addEvent('domready', function() {
 	$logs_actions = record_sort(array_unique_multi($logs, 'action'), 'action');
 	foreach ($logs_actions as $row) {
 		$action = getAction($row['action']);
+        $requestAction = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';;
+
 		if ($action == 'Idle') continue;
-		$selectedtext = $row['action'] == $_REQUEST['action'] ? ' selected="selected"' : '';
+		$selectedtext = $row['action'] ==  $requestAction ? ' selected="selected"' : '';
 		echo "\t\t".'<option value="'.$row['action'].'"'.$selectedtext.'>'.$row['action'].' - '.$action."</option>\n";
 	}
 ?>	</select>
@@ -107,8 +110,9 @@ window.addEvent('domready', function() {
 <?php
 	// get all itemid currently in logging
 	$logs_items = record_sort(array_unique_multi($logs, 'itemid'), 'itemid');
+    $requestItem = isset($_REQUEST['itemid']) ? $_REQUEST['itemid'] : '';
 	foreach ($logs_items as $row) {
-		$selectedtext = $row['itemid'] == $_REQUEST['itemid'] ? ' selected="selected"' : '';
+		$selectedtext = $row['itemid'] == $requestItem ? ' selected="selected"' : '';
 		echo "\t\t".'<option value="'.$row['itemid'].'"'.$selectedtext.'>'.$row['itemid']."</option>\n";
 	}
 ?>	</select>
@@ -122,8 +126,9 @@ window.addEvent('domready', function() {
 <?php
 	// get all itemname currently in logging
 	$logs_names = record_sort(array_unique_multi($logs, 'itemname'), 'itemname');
+    $requestName = isset($_REQUEST['itemname']) ? $_REQUEST['itemname'] : '';
 	foreach ($logs_names as $row) {
-		$selectedtext = $row['itemname'] == $_REQUEST['itemname'] ? ' selected="selected"' : '';
+		$selectedtext = $row['itemname'] == $requestName ? ' selected="selected"' : '';
 		echo "\t\t".'<option value="'.$row['itemname'].'"'.$selectedtext.'>'.$row['itemname']."</option>\n";
 	}
 ?>	</select>
@@ -174,30 +179,30 @@ window.addEvent('domready', function() {
 if(isset($_REQUEST['log_submit'])) {
 	// get the selections the user made.
 	$sqladd = array();
-	if($_REQUEST['searchuser']!=0)	$sqladd[] = "internalKey='".intval($_REQUEST['searchuser'])."'";
-	if($_REQUEST['action']!=0)	$sqladd[] = "action=".intval($_REQUEST['action']);
-	if($_REQUEST['itemid']!=0 || $_REQUEST['itemid']=="-")
+	if(!empty($_REQUEST['searchuser']))	$sqladd[] = "internalKey='".intval($_REQUEST['searchuser'])."'";
+	if(!empty($_REQUEST['action']))	$sqladd[] = "action=".intval($_REQUEST['action']);
+	if(!empty($_REQUEST['itemid']) && getkey($_REQUEST, 'itemid')!="-")
 					$sqladd[] = "itemid='".$_REQUEST['itemid']."'";
-	if($_REQUEST['itemname']!='0')	$sqladd[] = "itemname='".$modx->db->escape($_REQUEST['itemname'])."'";
-	if($_REQUEST['message']!="")	$sqladd[] = "message LIKE '%".$modx->db->escape($_REQUEST['message'])."%'";
+	if(!empty($_REQUEST['itemname']))	$sqladd[] = "itemname='".$modx->db->escape($_REQUEST['itemname'])."'";
+	if(!empty($_REQUEST['message']))	$sqladd[] = "message LIKE '%".$modx->db->escape($_REQUEST['message'])."%'";
 	// date stuff
-	if($_REQUEST['datefrom']!="")	$sqladd[] = "timestamp>".convertdate($_REQUEST['datefrom']);
-	if($_REQUEST['dateto']!="")	$sqladd[] = "timestamp<".convertdate($_REQUEST['dateto']);
+	if(!empty($_REQUEST['datefrom']))	$sqladd[] = "timestamp>".convertdate($_REQUEST['datefrom']);
+	if(!empty($_REQUEST['dateto']))	$sqladd[] = "timestamp<".convertdate($_REQUEST['dateto']);
 
 	// If current position is not set, set it to zero
-	if( !isset( $_REQUEST['int_cur_position'] ) || $_REQUEST['int_cur_position'] == 0 ){
+	if( empty( $_REQUEST['int_cur_position'] )){
 		 $int_cur_position = 0;
 	} else {
 		$int_cur_position = $_REQUEST['int_cur_position'];
 	}
 
 	// Number of result to display on the page, will be in the LIMIT of the sql query also
-	$int_num_result = is_numeric($_REQUEST['nrresults']) ? $_REQUEST['nrresults'] : $number_of_logs;
+	$int_num_result = isset($_REQUEST['nrresults']) && is_numeric($_REQUEST['nrresults']) ? $_REQUEST['nrresults'] : $number_of_logs;
 
-	$extargv = "&a=13&searchuser=".$_REQUEST['searchuser']."&action=".$_REQUEST['action'].
-		"&itemid=".$_REQUEST['itemid']."&itemname=".$_REQUEST['itemname']."&message=".
-		$_REQUEST['message']."&dateto=".$_REQUEST['dateto']."&datefrom=".
-		$_REQUEST['datefrom']."&nrresults=".$int_num_result."&log_submit=".$_REQUEST['log_submit']; // extra argv here (could be anything depending on your page)
+	$extargv = "&a=13&searchuser=".getkey($_REQUEST, 'searchuser')."&action=".getkey($_REQUEST, 'action').
+		"&itemid=".getkey($_REQUEST, 'itemid')."&itemname=".getkey($_REQUEST, 'itemname')."&message=".
+		getkey($_REQUEST, 'message')."&dateto=".getkey($_REQUEST, 'dateto')."&datefrom=".
+		getkey($_REQUEST, 'datefrom')."&nrresults=".$int_num_result."&log_submit=".getkey($_REQUEST, 'log_submit'); // extra argv here (could be anything depending on your page)
 
 	// build the sql
 	$limit = $num_rows = $modx->db->getValue(

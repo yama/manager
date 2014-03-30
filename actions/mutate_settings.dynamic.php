@@ -382,7 +382,7 @@ function confirmLangChange(el, lkey, elupd){
 			?>
 			  <select name="default_template" class="inputBox" onchange="documentDirty=true;wrap=document.getElementById('template_reset_options_wrapper');if(this.options[this.selectedIndex].value != '<?php echo $default_template;?>'){wrap.style.display='block';}else{wrap.style.display='none';}" style="width:150px">
 				<?php
-				
+                $closeOptGroup = false;
 				$currentCategory = '';
                                 while ($row = $modx->db->getRow($rs)) {
 					$thisCategory = $row['category'];
@@ -887,6 +887,10 @@ function confirmLangChange(el, lkey, elupd){
       <th><?php echo $_lang["pwd_hash_algo_title"] ?></th>
       <td>
       <?php
+        if(empty($pwd_hash_algo)){
+            $pwd_hash_algo = null;
+        }
+
         $phm['sel']['BLOWFISH_Y'] = $pwd_hash_algo=='BLOWFISH_Y' ?  1 : 0;
         $phm['sel']['BLOWFISH_A'] = $pwd_hash_algo=='BLOWFISH_A' ?  1 : 0;
         $phm['sel']['SHA512']     = $pwd_hash_algo=='SHA512' ?  1 : 0;
@@ -1164,6 +1168,10 @@ function confirmLangChange(el, lkey, elupd){
             </tr>
              <tr>
       		   <td nowrap class="warning"><b><?php echo $_lang["tree_page_click"] ?></b></td>
+                 <?php
+                 if(empty($tree_page_click)){
+                    $tree_page_click = null;
+                 }?>
       		   <td> <input onchange="documentDirty=true;" type="radio" name="tree_page_click" value="27" <?php echo $tree_page_click=='27' ? 'checked="checked"' : ""; ?> />
       			 <?php echo $_lang["edit_resource"]?><br />
       			 <input onchange="documentDirty=true;" type="radio" name="tree_page_click" value="3" <?php echo ($tree_page_click=='3' || !isset($tree_page_click)) ? 'checked="checked"' : ""; ?> />
@@ -1357,8 +1365,11 @@ function confirmLangChange(el, lkey, elupd){
             <td colspan="2"><div class='split'></div></td>
           </tr>
           
-          <?php if(!isset($use_browser)) $use_browser=1; ?>
-          
+          <?php if(!isset($use_browser)) $use_browser=1;
+          if(empty($rb_webuser)){
+              $rb_webuser = null;
+          }
+          ?>
           <tr id='rbRow1' class="" style="display: <?php echo $use_browser==1 ? $displayStyle : 'none' ; ?>">
             <td nowrap class="warning"><b><?php echo $_lang["rb_webuser_title"]?></b></td>
             <td><input onchange="documentDirty=true;" type="radio" name="rb_webuser" value="1" <?php echo $rb_webuser=='1' ? 'checked="checked"' : "" ; ?> />
@@ -1444,6 +1455,11 @@ function confirmLangChange(el, lkey, elupd){
             <tr id='rbRow171' style="display: <?php echo $use_browser==1 ? $displayStyle : 'none' ; ?>">
               <td colspan="2"><div class='split'></div></td>
             </tr>
+            <?php
+            if(empty($clean_uploaded_filename)){
+                $clean_uploaded_filename = null;
+            }
+            ?>
           <tr id='rbRow172' class='' style="display: <?php echo $use_browser==1 ? $displayStyle : 'none' ; ?>">
               <td nowrap class="warning"><b><?php echo $_lang["clean_uploaded_filename"]?></b></td>
               <td> <input onchange="documentDirty=true;" type="radio" name="clean_uploaded_filename" value="1" <?php echo $clean_uploaded_filename=='1' ? 'checked="checked"' : "" ; ?> />

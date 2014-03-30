@@ -222,9 +222,9 @@ function showHide(what, onoff){
 	$evtOut = $modx->invokeEvent("OnWUsrFormPrerender",array("id" => $user));
 	if(is_array($evtOut)) echo implode("",$evtOut);
 ?>
-<input type="hidden" name="mode" value="<?php echo $_GET['a'] ?>" />
-<input type="hidden" name="id" value="<?php echo $_GET['id'] ?>" />
-<input type="hidden" name="blockedmode" value="<?php echo ($userdata['blocked']==1 || ($userdata['blockeduntil']>time() && $userdata['blockeduntil']!=0)|| ($userdata['blockedafter']<time() && $userdata['blockedafter']!=0) || $userdata['failedlogins']>3) ? "1":"0" ?>" />
+<input type="hidden" name="mode" value="<?php echo getkey($_GET, 'a',87); ?>" />
+<input type="hidden" name="id" value="<?php echo getkey($_GET, 'id', 0); ?>" />
+<input type="hidden" name="blockedmode" value="<?php echo (getkey($userdata, 'blocked')==1 || (getkey($userdata, 'blockeduntil')>time() && getkey($userdata, 'blockeduntil')!=0)|| (getkey($userdata, 'blockedafter')<time() && getkey($userdata, 'blockedafter')!=0) || getkey($userdata, 'failedlogins')>3) ? "1":"0" ?>" />
 
 <h1><?php echo $_lang['web_user_title']; ?></h1>
 
@@ -261,7 +261,7 @@ function showHide(what, onoff){
 		<table border="0" cellspacing="0" cellpadding="3">
 		  <tr>
 			<td colspan="3">
-				<span id="blocked" class="warning"><?php if($userdata['blocked']==1 || ($userdata['blockeduntil']>time() && $userdata['blockeduntil']!=0)|| ($userdata['blockedafter']<time() && $userdata['blockedafter']!=0) || getkey($userdata, 'failedlogins', 0)>3) { ?><b><?php echo $_lang['user_is_blocked']; ?></b><?php } ?></span><br />
+				<span id="blocked" class="warning"><?php if(getkey($userdata, 'blocked')==1 || (getkey($userdata, 'blockeduntil')>time() && getkey($userdata, 'blockeduntil')!=0)|| (getkey($userdata, 'blockedafter')<time() && getkey($userdata, 'blockedafter')!=0) || getkey($userdata, 'failedlogins', 0)>3) { ?><b><?php echo $_lang['user_is_blocked']; ?></b><?php } ?></span><br />
 			</td>
 		  </tr>
 		  <?php if(!empty($userdata['id'])) { ?>
@@ -273,10 +273,15 @@ function showHide(what, onoff){
 			</td>
 		  </tr>
 		  <?php } ?>
-		  <tr id="editname" style="display:<?php echo $_GET['a']=='87'||(isset($usernamedata['oldusername']) && $usernamedata['oldusername']!=$usernamedata['username']) ? $displayStyle : 'none' ; ?>">
+            <?php
+            if(empty($displayStyle)){
+                $displayStyle = null;
+            }
+            ?>
+		  <tr id="editname" style="display:<?php echo getkey($_GET, 'a', 87)=='87'||(isset($usernamedata['oldusername']) && $usernamedata['oldusername']!=$usernamedata['username']) ? $displayStyle : 'none' ; ?>">
 			<td><?php echo $_lang['username']; ?>:</td>
 			<td>&nbsp;</td>
-			<td><input type="text" name="newusername" class="inputBox" value="<?php echo htmlspecialchars(isset($_POST['newusername']) ? $_POST['newusername'] : $usernamedata['username']); ?>" onchange='documentDirty=true;' maxlength="100" /></td>
+			<td><input type="text" name="newusername" class="inputBox" value="<?php echo htmlspecialchars(isset($_POST['newusername']) ? $_POST['newusername'] : getkey($usernamedata, 'username')); ?>" onchange='documentDirty=true;' maxlength="100" /></td>
 		  </tr>
 		  <tr>
 			<td valign="top"><?php echo $_GET['a']=='87' ? $_lang['password'].":" : $_lang['change_password_new'].":" ; ?></td>
@@ -285,8 +290,8 @@ function showHide(what, onoff){
 				<span style="display:<?php echo $_REQUEST['a']=="87" ? "block": "none" ; ?>" id="passwordBlock">
 				<fieldset style="width:300px">
 				<legend><b><?php echo $_lang['password_gen_method']; ?></b></legend>
-				<input type=radio name="passwordgenmethod" value="g" <?php echo $_POST['passwordgenmethod']=="spec" ? "" : 'checked="checked"'; ?> /><?php echo $_lang['password_gen_gen']; ?><br />
-				<input type=radio name="passwordgenmethod" value="spec" <?php echo $_POST['passwordgenmethod']=="spec" ? 'checked="checked"' : ""; ?>><?php echo $_lang['password_gen_specify']; ?> <br />
+				<input type=radio name="passwordgenmethod" value="g" <?php echo getkey($_POST, 'passwordgenmethod')=="spec" ? "" : 'checked="checked"'; ?> /><?php echo $_lang['password_gen_gen']; ?><br />
+				<input type=radio name="passwordgenmethod" value="spec" <?php echo getkey($_POST, 'passwordgenmethod')=="spec" ? 'checked="checked"' : ""; ?>><?php echo $_lang['password_gen_specify']; ?> <br />
 				<div style="padding-left:20px">
 				<label for="specifiedpassword" style="width:120px"><?php echo $_lang['change_password_new']; ?>:</label>
 				<input type="password" name="specifiedpassword" onchange="documentdirty=true;" onkeypress="document.userform.passwordgenmethod[1].checked=true;" size="20" /><br />
@@ -298,8 +303,8 @@ function showHide(what, onoff){
 				<br />
 				<fieldset style="width:300px">
 				<legend><b><?php echo $_lang['password_method']; ?></b></legend>
-				<input type=radio name="passwordnotifymethod" value="e" <?php echo $_POST['passwordnotifymethod']=="e" ? 'checked="checked"' : ""; ?> /><?php echo $_lang['password_method_email']; ?><br />
-				<input type=radio name="passwordnotifymethod" value="s" <?php echo $_POST['passwordnotifymethod']=="e" ? "" : 'checked="checked"'; ?> /><?php echo $_lang['password_method_screen']; ?>
+				<input type=radio name="passwordnotifymethod" value="e" <?php echo getkey($_POST, 'passwordnotifymethod')=="e" ? 'checked="checked"' : ""; ?> /><?php echo $_lang['password_method_email']; ?><br />
+				<input type=radio name="passwordnotifymethod" value="s" <?php echo getkey($_POST, 'passwordnotifymethod')=="e" ? "" : 'checked="checked"'; ?> /><?php echo $_lang['password_method_screen']; ?>
 				</fieldset>
 				</span>
 			</td>
@@ -307,57 +312,57 @@ function showHide(what, onoff){
 		  <tr>
 			<td><?php echo $_lang['user_full_name']; ?>:</td>
 			<td>&nbsp;</td>
-			<td><input type="text" name="fullname" class="inputBox" value="<?php echo htmlspecialchars(isset($_POST['fullname']) ? $_POST['fullname'] : $userdata['fullname']); ?>" onchange="documentDirty=true;" /></td>
+			<td><input type="text" name="fullname" class="inputBox" value="<?php echo htmlspecialchars(isset($_POST['fullname']) ? $_POST['fullname'] : getkey($userdata, 'fullname')); ?>" onchange="documentDirty=true;" /></td>
 		  </tr>
 		  <tr>
 			<td><?php echo $_lang['user_email']; ?>:</td>
 			<td>&nbsp;</td>
 			<td>
-			<input type="text" name="email" class="inputBox" value="<?php echo  isset($_POST['email']) ? $_POST['email'] : $userdata['email']; ?>" onchange="documentDirty=true;" />
-			<input type="hidden" name="oldemail" value="<?php echo htmlspecialchars(!empty($userdata['oldemail']) ? $userdata['oldemail']:$userdata['email']); ?>" />
+			<input type="text" name="email" class="inputBox" value="<?php echo  isset($_POST['email']) ? $_POST['email'] : getkey($userdata, 'email'); ?>" onchange="documentDirty=true;" />
+			<input type="hidden" name="oldemail" value="<?php echo htmlspecialchars(!empty($userdata['oldemail']) ? $userdata['oldemail']:getkey($userdata, 'email')); ?>" />
 			</td>
 		  </tr>
 		  <tr>
 			<td><?php echo $_lang['user_phone']; ?>:</td>
 			<td>&nbsp;</td>
-			<td><input type="text" name="phone" class="inputBox" value="<?php echo isset($_POST['phone']) ? $_POST['phone'] : $userdata['phone']; ?>" onchange="documentDirty=true;" /></td>
+			<td><input type="text" name="phone" class="inputBox" value="<?php echo isset($_POST['phone']) ? $_POST['phone'] : getkey($userdata, 'phone'); ?>" onchange="documentDirty=true;" /></td>
 		  </tr>
 		  <tr>
 			<td><?php echo $_lang['user_mobile']; ?>:</td>
 			<td>&nbsp;</td>
-			<td><input type="text" name="mobilephone" class="inputBox" value="<?php echo isset($_POST['mobilephone']) ? $_POST['mobilephone'] : $userdata['mobilephone']; ?>" onchange="documentDirty=true;" /></td>
+			<td><input type="text" name="mobilephone" class="inputBox" value="<?php echo isset($_POST['mobilephone']) ? $_POST['mobilephone'] : getkey($userdata, 'mobilephone'); ?>" onchange="documentDirty=true;" /></td>
 		  </tr>
 		  <tr>
 			<td><?php echo $_lang['user_fax']; ?>:</td>
 			<td>&nbsp;</td>
-			<td><input type="text" name="fax" class="inputBox" value="<?php echo isset($_POST['fax']) ? $_POST['fax'] : $userdata['fax']; ?>" onchange="documentDirty=true;" /></td>
+			<td><input type="text" name="fax" class="inputBox" value="<?php echo isset($_POST['fax']) ? $_POST['fax'] : getkey($userdata, 'fax'); ?>" onchange="documentDirty=true;" /></td>
 		  </tr>
 		<tr>
 			<td><?php echo $_lang['user_street']; ?>:</td>
 			<td>&nbsp;</td>
-			<td><input type="text" name="street" class="inputBox" value="<?php echo htmlspecialchars($userdata['street']); ?>" onchange="documentDirty=true;" /></td>
+			<td><input type="text" name="street" class="inputBox" value="<?php echo htmlspecialchars(getkey($userdata, 'street')); ?>" onchange="documentDirty=true;" /></td>
 		</tr>
 		<tr>
 			<td><?php echo $_lang['user_city']; ?>:</td>
 			<td>&nbsp;</td>
-			<td><input type="text" name="city" class="inputBox" value="<?php echo htmlspecialchars($userdata['city']); ?>" onchange="documentDirty=true;" /></td>
+			<td><input type="text" name="city" class="inputBox" value="<?php echo htmlspecialchars(getkey($userdata, 'city')); ?>" onchange="documentDirty=true;" /></td>
 		</tr>
 		  <tr>
 			<td><?php echo $_lang['user_state']; ?>:</td>
 			<td>&nbsp;</td>
-			<td><input type="text" name="state" class="inputBox" value="<?php echo isset($_POST['state']) ? $_POST['state'] : $userdata['state']; ?>" onchange="documentDirty=true;" /></td>
+			<td><input type="text" name="state" class="inputBox" value="<?php echo isset($_POST['state']) ? $_POST['state'] : getkey($userdata, 'state'); ?>" onchange="documentDirty=true;" /></td>
 		  </tr>
 		  <tr>
 			<td><?php echo $_lang['user_zip']; ?>:</td>
 			<td>&nbsp;</td>
-			<td><input type="text" name="zip" class="inputBox" value="<?php echo isset($_POST['zip']) ? $_POST['zip'] : $userdata['zip']; ?>" onchange="documentDirty=true;" /></td>
+			<td><input type="text" name="zip" class="inputBox" value="<?php echo isset($_POST['zip']) ? $_POST['zip'] : getkey($userdata, 'zip'); ?>" onchange="documentDirty=true;" /></td>
 		  </tr>
 		  <tr>
 			<td><?php echo $_lang['user_country']; ?>:</td>
 			<td>&nbsp;</td>
 			<td>
 			<select size="1" name="country" onchange="documentDirty=true;">
-            <?php $chosenCountry = isset($_POST['country']) ? $_POST['country'] : $userdata['country']; ?>
+            <?php $chosenCountry = isset($_POST['country']) ? $_POST['country'] : getkey($userdata, 'country'); ?>
 			<option value="" <?php (!isset($chosenCountry) ? ' selected' : '') ?> >&nbsp;</option>
 				<?php
 				foreach ($_country_lang as $key => $country) {
@@ -371,7 +376,7 @@ function showHide(what, onoff){
 			<td><?php echo $_lang['user_dob']; ?>:</td>
 			<td>&nbsp;</td>
 			<td>
-				<input type="text" id="dob" name="dob" class="DatePicker" value="<?php echo isset($_POST['dob']) ? $_POST['dob'] : ($userdata['dob'] ? $modx->toDateFormat($userdata['dob'],'dateOnly'):""); ?>" onblur='documentDirty=true;'>
+				<input type="text" id="dob" name="dob" class="DatePicker" value="<?php echo isset($_POST['dob']) ? $_POST['dob'] : (getkey($userdata, 'dob') ? $modx->toDateFormat($userdata['dob'],'dateOnly'):""); ?>" onblur='documentDirty=true;'>
 				<a onclick="document.userform.dob.value=''; return true;" onmouseover="window.status='<?php echo $_lang['remove_date']; ?>'; return true;" onmouseout="window.status=''; return true;" style="cursor:pointer; cursor:hand"><img align="absmiddle" src="<?php echo $_style["icons_cal_nodate"]?>" border="0" alt="<?php echo $_lang['remove_date']; ?>" /></a>
 			</td>
 		  </tr>
@@ -380,9 +385,9 @@ function showHide(what, onoff){
 			<td>&nbsp;</td>
 			<td><select name="gender" onchange="documentDirty=true;">
 				<option value=""></option>
-				<option value="1" <?php echo (getkey($_POST, 'gender')=='1'||$userdata['gender']=='1')? "selected='selected'":""; ?>><?php echo $_lang['user_male']; ?></option>
-				<option value="2" <?php echo (getkey($_POST, 'gender')=='2'||$userdata['gender']=='2')? "selected='selected'":""; ?>><?php echo $_lang['user_female']; ?></option>
-				<option value="3" <?php echo (getkey($_POST, 'gender')=='3'||$userdata['gender']=='3')? "selected='selected'":""; ?>><?php echo $_lang['user_other']; ?></option>
+				<option value="1" <?php echo (getkey($_POST, 'gender')=='1'||getkey($userdata, 'gender')=='1')? "selected='selected'":""; ?>><?php echo $_lang['user_male']; ?></option>
+				<option value="2" <?php echo (getkey($_POST, 'gender')=='2'||getkey($userdata, 'gender')=='2')? "selected='selected'":""; ?>><?php echo $_lang['user_female']; ?></option>
+				<option value="3" <?php echo (getkey($_POST, 'gender')=='3'||getkey($userdata, 'gender')=='3')? "selected='selected'":""; ?>><?php echo $_lang['user_other']; ?></option>
 				</select>
 			</td>
 		  </tr>
@@ -390,7 +395,7 @@ function showHide(what, onoff){
 			<td valign="top"><?php echo $_lang['comment']; ?>:</td>
 			<td>&nbsp;</td>
 			<td>
-				<textarea type="text" name="comment" class="inputBox"  rows="5" onchange="documentDirty=true;"><?php echo htmlspecialchars(isset($_POST['comment']) ? $_POST['comment'] : $userdata['comment']); ?></textarea>
+				<textarea type="text" name="comment" class="inputBox"  rows="5" onchange="documentDirty=true;"><?php echo htmlspecialchars(isset($_POST['comment']) ? $_POST['comment'] : getkey($userdata, 'comment')); ?></textarea>
 			</td>
 		  </tr>
 		<?php if($_GET['a']=='88') { ?>
@@ -513,7 +518,7 @@ function showHide(what, onoff){
         <table border="0" cellspacing="0" cellpadding="3">
           <tr>
             <td nowrap class="warning"><b><?php echo $_lang["user_photo"] ?></b></td>
-            <td><input onchange="documentDirty=true;" type='text' maxlength='255' style="width: 150px;" name="photo" value="<?php echo htmlspecialchars(isset($_POST['photo']) ? $_POST['photo'] : $userdata['photo']); ?>" /> <input type="button" value="<?php echo $_lang['insert']; ?>" onclick="BrowseServer();" /></td>
+            <td><input onchange="documentDirty=true;" type='text' maxlength='255' style="width: 150px;" name="photo" value="<?php echo htmlspecialchars(isset($_POST['photo']) ? $_POST['photo'] : getkey($userdata, 'photo')); ?>" /> <input type="button" value="<?php echo $_lang['insert']; ?>" onclick="BrowseServer();" /></td>
           </tr>
           <tr>
             <td width="200">&nbsp;</td>

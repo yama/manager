@@ -117,7 +117,7 @@ if (is_array($evtOut))
 
 ?>
 <input type="hidden" name="a" value="79" />
-<input type="hidden" name="id" value="<?php echo $_REQUEST['id']?>" />
+<input type="hidden" name="id" value="<?php echo getkey($_REQUEST, 'id')?>" />
 <input type="hidden" name="mode" value="<?php echo (int) $_REQUEST['a']?>" />
 
     <h1><?php echo $_lang['htmlsnippet_title']?></h1>

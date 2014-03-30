@@ -83,7 +83,7 @@ echo $cm->render();
 	});
 </script>
 <form name="resource" method="post">
-<input type="hidden" name="id" value="<?php echo $id?>" />
+<input type="hidden" name="id" value="<?php echo isset($id) ? $id : 0;?>" />
 <input type="hidden" name="listmode" value="<?php echo $listmode?>" />
 <input type="hidden" name="op" value="" />
 

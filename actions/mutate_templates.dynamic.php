@@ -93,7 +93,7 @@ function deletedocument() {
     if(is_array($evtOut)) echo implode("",$evtOut);
 ?>
 <input type="hidden" name="a" value="20">
-<input type="hidden" name="id" value="<?php echo $_REQUEST['id'];?>">
+<input type="hidden" name="id" value="<?php echo getkey($_REQUEST, 'id');?>">
 <input type="hidden" name="mode" value="<?php echo (int) $_REQUEST['a'];?>">
 
     <h1><?php echo $_lang['template_title']; ?></h1>

@@ -131,7 +131,7 @@ if(IN_MANAGER_MODE!="true") die("<b>INCLUDE_ORDERING_ERROR</b><br /><br />Please
         // Make sure to pass in the $modx_textdir variable to the node builder
         global $modx_textdir;
 
-        $node_name_source = $modx->config['resource_tree_node_name'];
+        $node_name_source = getkey($modx->config, 'resource_tree_node_name', 'pagetitle');
         while(list($id,$pagetitle,$menutitle,$parent,$isfolder,$published,$deleted,$type,$template,$menuindex,$donthit,$hidemenu,$alias,$contenttype,$privateweb,$privatemgr,$hasAccess) = $modx->db->getRow($result,'num'))
         {
             switch($node_name_source)
@@ -148,9 +148,6 @@ if(IN_MANAGER_MODE!="true") die("<b>INCLUDE_ORDERING_ERROR</b><br /><br />Please
                     }
                     $nodetitle = $modx->config['friendly_url_prefix'] . $nodetitle;
                     break;
-                case 'pagetitle':
-                    $nodetitle = $pagetitle;
-                    break;
                 case 'createdon':
                 case 'editedon':
                 case 'publishedon':
@@ -161,6 +158,7 @@ if(IN_MANAGER_MODE!="true") die("<b>INCLUDE_ORDERING_ERROR</b><br /><br />Please
                     if(!empty($date)) $nodetitle = $modx->toDateFormat($date);
                     else              $nodetitle = '- - -';
                     break;
+                case 'pagetitle':
                 default:
                     $nodetitle = $pagetitle;
             }

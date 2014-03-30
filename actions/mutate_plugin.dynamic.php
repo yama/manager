@@ -269,8 +269,11 @@ function decode(s){
 // invoke OnPluginFormPrerender event
 $evtOut = $modx->invokeEvent("OnPluginFormPrerender",array("id" => $id));
 if(is_array($evtOut)) echo implode("",$evtOut);
+if(empty($content)){
+    $content = array();
+}
 ?>
-    <input type="hidden" name="id" value="<?php echo $content['id'];?>">
+    <input type="hidden" name="id" value="<?php echo getkey($content, 'id');?>">
     <input type="hidden" name="mode" value="<?php echo $_GET['a'];?>">
 
     <h1><?php echo $_lang['plugin_title']; ?></h1>
@@ -314,11 +317,11 @@ if(is_array($evtOut)) echo implode("",$evtOut);
     <table>
       <tr>
         <th><?php echo $_lang['plugin_name']; ?>:</th>
-        <td><input name="name" type="text" maxlength="100" value="<?php echo htmlspecialchars($content['name']);?>" class="inputBox" style="width:250px;" onchange="documentDirty=true;"><span class="warning" id="savingMessage">&nbsp;</span></td>
+        <td><input name="name" type="text" maxlength="100" value="<?php echo htmlspecialchars(getkey($content, 'name'));?>" class="inputBox" style="width:250px;" onchange="documentDirty=true;"><span class="warning" id="savingMessage">&nbsp;</span></td>
       </tr>
       <tr>
         <th><?php echo $_lang['plugin_desc']; ?>:&nbsp;&nbsp;</th>
-        <td><input name="description" type="text" maxlength="255" value="<?php echo $content['description'];?>" class="inputBox" style="width:300px;" onchange="documentDirty=true;"></td>
+        <td><input name="description" type="text" maxlength="255" value="<?php echo getkey($content, 'description');?>" class="inputBox" style="width:300px;" onchange="documentDirty=true;"></td>
       </tr>
       <tr>
         <th><?php echo $_lang['existing_category']; ?>:&nbsp;&nbsp;</th>
@@ -339,11 +342,11 @@ if(is_array($evtOut)) echo implode("",$evtOut);
         <td><input name="newcategory" type="text" maxlength="45" value="" class="inputBox" style="width:300px;" onchange="documentDirty=true;"></td>
       </tr>
        <tr>
-        <td valign="top" colspan="2"><label><input name="disabled" type="checkbox" <?php echo $content['disabled']==1 ? "checked='checked'" : "";?> value="on" class="inputBox"> <?php echo  $content['disabled']==1 ? "<span class='warning'>".$_lang['plugin_disabled']."</span></label>":$_lang['plugin_disabled']; ?></td>
+        <td valign="top" colspan="2"><label><input name="disabled" type="checkbox" <?php echo getkey($content, 'disabled')==1 ? "checked='checked'" : "";?> value="on" class="inputBox"> <?php echo  getkey($content, 'disabled')==1 ? "<span class='warning'>".$_lang['plugin_disabled']."</span></label>":$_lang['plugin_disabled']; ?></td>
       </tr>
 <?php if($modx->hasPermission('save_role')):?>
       <tr>
-        <td valign="top" colspan="2"><label style="display:block;"><input name="locked" type="checkbox" <?php echo $content['locked']==1 ? "checked='checked'" : "" ;?> value="on" class="inputBox"> <?php echo $_lang['lock_plugin']; ?></label> <span class="comment"><?php echo $_lang['lock_plugin_msg']; ?></span></td>
+        <td valign="top" colspan="2"><label style="display:block;"><input name="locked" type="checkbox" <?php echo getkey($content, 'locked')==1 ? "checked='checked'" : "" ;?> value="on" class="inputBox"> <?php echo $_lang['lock_plugin']; ?></label> <span class="comment"><?php echo $_lang['lock_plugin_msg']; ?></span></td>
       </tr>
 <?php endif;?>
     </table>
@@ -354,7 +357,7 @@ if(is_array($evtOut)) echo implode("",$evtOut);
             <?php echo $_lang['plugin_code']; ?>
         </div>
         <div class="sectionBody">
-        <textarea dir="ltr" name="post" class="phptextarea" style="width:100%; height:370px;" wrap="<?php echo $content['wrap']== 1 ? "soft" : "off" ;?>" onchange="documentDirty=true;"><?php echo htmlspecialchars($content['plugincode']); ?></textarea>
+        <textarea dir="ltr" name="post" class="phptextarea" style="width:100%; height:370px;" wrap="<?php echo getkey($content, 'wrap')== 1 ? "soft" : "off" ;?>" onchange="documentDirty=true;"><?php echo htmlspecialchars(getkey($content, 'plugincode')); ?></textarea>
         </div>
     </div>
     <!-- PHP text editor end -->
@@ -390,7 +393,7 @@ if(is_array($evtOut)) echo implode("",$evtOut);
           </tr>
           <tr>
             <th valign="top"><?php echo $_lang['plugin_config']; ?>:</th>
-            <td valign="top"><textarea class="phptextarea" name="properties" onChange='showParameters(this);documentDirty=true;'><?php echo $content['properties'];?></textarea><br /><input type="button" value="<?php echo $_lang['update_params']; ?>" /></td>
+            <td valign="top"><textarea class="phptextarea" name="properties" onChange='showParameters(this);documentDirty=true;'><?php echo getkey($content, 'properties');?></textarea><br /><input type="button" value="<?php echo $_lang['update_params']; ?>" /></td>
           </tr>
           <tr id="displayparamrow">
             <td valign="top">&nbsp;</td>
