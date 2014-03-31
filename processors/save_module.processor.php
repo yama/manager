@@ -5,39 +5,39 @@ if(!$modx->hasPermission('save_module')) {
 	$e->dumpError();	
 }
 
-$id = intval($_POST['id']);
-$name = $modx->db->escape(trim($_POST['name']));
-$description = $modx->db->escape($_POST['description']);
-$resourcefile = $modx->db->escape($_POST['resourcefile']);
-$enable_resource = $_POST['enable_resource']=='on' ? 1 : 0 ;
-$icon = $modx->db->escape($_POST['icon']);
+$id = intval(getkey($_POST, 'id'));
+$name = $modx->db->escape(trim(getkey($_POST, 'name')));
+$description = $modx->db->escape(getkey($_POST,'description'));
+$resourcefile = $modx->db->escape(getkey($_POST, 'resourcefile'));
+$enable_resource = getkey($_POST, 'enable_resource')=='on' ? 1 : 0 ;
+$icon = $modx->db->escape(getkey($_POST, 'icon'));
 //$category = intval($_POST['category']);
-$disabled = $_POST['disabled']=='on' ? 1 : 0 ;
-$wrap = $_POST['wrap']=='on' ? 1 : 0 ;
-$locked = $_POST['locked']=='on' ? 1 : 0 ;
-$modulecode = $modx->db->escape($_POST['post']);
-$properties = $modx->db->escape($_POST['properties']);
-$enable_sharedparams = $_POST['enable_sharedparams']=='on' ? 1 : 0 ;
-$guid = $modx->db->escape($_POST['guid']);
+$disabled = getkey($_POST, 'disabled')=='on' ? 1 : 0 ;
+$wrap = getkey($_POST, 'wrap')=='on' ? 1 : 0 ;
+$locked = getkey($_POST, 'locked')=='on' ? 1 : 0 ;
+$modulecode = $modx->db->escape(getkey($_POST, 'post'));
+$properties = $modx->db->escape(getkey($_POST, 'properties'));
+$enable_sharedparams = getkey($_POST, 'enable_sharedparams')=='on' ? 1 : 0 ;
+$guid = $modx->db->escape(getkey($_POST, 'guid'));
 
 //Kyle Jaebker - added category support
-if (empty($_POST['newcategory']) && $_POST['categoryid'] > 0) {
+if (empty($_POST['newcategory']) && getkey($_POST, 'categoryid') > 0) {
     $categoryid = $modx->db->escape($_POST['categoryid']);
-} elseif (empty($_POST['newcategory']) && $_POST['categoryid'] <= 0) {
+} elseif (empty($_POST['newcategory']) && getkey($_POST, 'categoryid') <= 0) {
     $categoryid = 0;
 } else {
     include_once "categories.inc.php";
-    $catCheck = checkCategory($modx->db->escape($_POST['newcategory']));
+    $catCheck = checkCategory($modx->db->escape(getkey($_POST, 'newcategory')));
     if ($catCheck) {
         $categoryid = $catCheck;
     } else {
-        $categoryid = newCategory($_POST['newcategory']);
+        $categoryid = newCategory(getkey($_POST, 'newcategory'));
     }
 }
 
 if($name=="") $name = "Untitled module";
 
-switch ($_POST['mode']) {
+switch (getkey($_POST, 'mode')) {
     case '107':
 		// invoke OnBeforeModFormSave event
 		$modx->invokeEvent("OnBeforeModFormSave",
@@ -175,7 +175,7 @@ function saveUserGroupAccessPermissons(){
 	global $use_udperms;
 
 	if($newid) $id = $newid;
-	$usrgroups = $_POST['usrgroups'];
+	$usrgroups = getkey($_POST, 'usrgroups');
 
 	// check for permission update access
 	if($use_udperms==1) {

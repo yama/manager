@@ -92,9 +92,12 @@ if(!empty($content["properties"])){
 	$tmpParams = explode("&",$content["properties"]);
 	for($x=0; $x<count($tmpParams); $x++) {
 		$pTmp = explode("=", $tmpParams[$x]);
-		$pvTmp = explode(";", trim($pTmp[1]));
-		if ($pvTmp[1]=='list' && $pvTmp[3]!="") $parameter[$pTmp[0]] = $pvTmp[3]; //list default
-		else if($pvTmp[1]!='list' && $pvTmp[2]!="") $parameter[$pTmp[0]] = $pvTmp[2];
+        if(empty($pTmp)){
+            $pTmp = array('', '', '', '');
+        }
+		$pvTmp = explode(";", trim(getkey($pTmp, 1)));
+		if (getkey($pvTmp, 1)=='list' && getkey($pvTmp, 3)!="") $parameter[getkey($pTmp,0, 0)] = getkey($pvTmp, 3); //list default
+		else if(getkey($pvTmp, 1)!='list' && getkey($pvTmp, 2)!="") $parameter[getkey($pTmp, 0, 0)] = getkey($pvTmp, 2);
 	}
 }
 
