@@ -26,7 +26,7 @@ $cacheable = getkey($_POST, 'cacheable');
 $syncsite = getkey($_POST, 'syncsite');
 $pub_date = getkey($_POST, 'pub_date');
 $unpub_date = getkey($_POST, 'unpub_date');
-$document_groups = (isset($_POST['chkalldocs']) && $_POST['chkalldocs'] == 'on') ? array() : $_POST['docgroups'];
+$document_groups = (isset($_POST['chkalldocs']) && $_POST['chkalldocs'] == 'on') ? array() : getkey($_POST, 'docgroups');
 $type = getkey($_POST, 'type', 'document');
 $keywords = getkey($_POST, 'keywords');
 $metatags = getkey($_POST, 'metatags');
@@ -292,7 +292,7 @@ if ($actionToTake != "new") {
 
 // check to see if the user is allowed to save the document in the place he wants to save it in
 if ($use_udperms == 1) {
-	if ($existingDocument['parent'] != $parent) {
+	if (empty($existingDocument) || getkey($existingDocument, 'parent') != $parent) {
 		include_once BOLMER_MANAGER_PATH ."processors/user_documents_permissions.class.php";
 		$udperms = new udperms();
 		$udperms->user = $modx->getLoginUserID();

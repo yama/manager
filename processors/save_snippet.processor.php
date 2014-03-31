@@ -8,38 +8,38 @@ if(!$modx->hasPermission('save_snippet')) {
 <?php
 
 $id = intval($_POST['id']);
-$name = $modx->db->escape(trim($_POST['name']));
-$description = $modx->db->escape($_POST['description']);
-$locked = $_POST['locked']=='on' ? 1 : 0 ;
-$snippet = trim($modx->db->escape($_POST['post']));
+$name = $modx->db->escape(trim(getkey($_POST, 'name', '')));
+$description = $modx->db->escape(getkey($_POST, 'description', ''));
+$locked = getkey($_POST, 'locked')=='on' ? 1 : 0 ;
+$snippet = trim($modx->db->escape(getkey($_POST, 'post', '')));
 // strip out PHP tags from snippets
 if ( strncmp($snippet, "<?", 2) == 0 ) {
     $snippet = substr($snippet, 2);
     if ( strncmp( $snippet, "php", 3 ) == 0 ) $snippet = substr($snippet, 3);
     if ( substr($snippet, -2, 2) == '?>' ) $snippet = substr($snippet, 0, -2);
 }
-$properties = $modx->db->escape($_POST['properties']);
-$moduleguid = $modx->db->escape($_POST['moduleguid']);
-$sysevents = $_POST['sysevents'];
+$properties = $modx->db->escape(getkey($_POST, 'properties', ''));
+$moduleguid = $modx->db->escape(getkey($_POST, 'moduleguid', ''));
+$sysevents = getkey($_POST, 'sysevents', '');
 
 //Kyle Jaebker - added category support
-if (empty($_POST['newcategory']) && $_POST['categoryid'] > 0) {
+if (empty($_POST['newcategory']) && getkey($_POST, 'categoryid') > 0) {
     $categoryid = $modx->db->escape($_POST['categoryid']);
-} elseif (empty($_POST['newcategory']) && $_POST['categoryid'] <= 0) {
+} elseif (empty($_POST['newcategory']) && getkey($_POST, 'categoryid') <= 0) {
     $categoryid = 0;
 } else {
     include_once "categories.inc.php";
-    $catCheck = checkCategory($modx->db->escape($_POST['newcategory']));
+    $catCheck = checkCategory($modx->db->escape(getkey($_POST, 'newcategory')));
     if ($catCheck) {
         $categoryid = $catCheck;
     } else {
-        $categoryid = newCategory($_POST['newcategory']);
+        $categoryid = newCategory(getkey($_POST, 'newcategory'));
     }
 }
 
 if($name=="") $name = "Untitled snippet";
 
-switch ($_POST['mode']) {
+switch (getkey($_POST, 'mode')) {
     case '23':
 
 		// invoke OnBeforeSnipFormSave event
